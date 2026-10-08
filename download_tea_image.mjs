@@ -1,0 +1,13 @@
+﻿import fs from "fs";
+const q = "masala chai cup";
+const api = "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=" + encodeURIComponent(q) + "&gsrnamespace=6&gsrlimit=10&prop=imageinfo&iiprop=url&iiurlwidth=900&format=json&origin=*";
+const h = { "User-Agent": "SmartCanteenCollegeProject/1.0 (student project)" };
+const r = await fetch(api, { headers: h });
+if (!r.ok) throw new Error("Search failed " + r.status);
+const pages = Object.values((await r.json()).query?.pages || {});
+const hit = pages.find(p => /\.jpe?g$/i.test(p.title) && p.imageinfo?.[0]?.thumburl);
+if (!hit) throw new Error("No jpg found");
+const img = await fetch(hit.imageinfo[0].thumburl, { headers: h });
+if (!img.ok) throw new Error("Download failed " + img.status);
+fs.writeFileSync("public/menu-images/tea.jpg", Buffer.from(await img.arrayBuffer()));
+console.log("Saved tea.jpg from:", hit.title);

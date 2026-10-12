@@ -25,24 +25,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [canteenId, setCanteenId] = useState<string | null>(null);
   const [canteenName, setCanteenName] = useState<string | null>(null);
 
-  const addItem = useCallback(
-    (item: MenuItem) => {
-      setItems((prev) => {
-        if (canteenId && canteenId !== item.canteen_id && prev.length > 0) {
-          return [{ ...item, quantity: 1 }];
-        }
-        setCanteenId(item.canteen_id);
-        const existing = prev.find((i) => i.id === item.id);
-        if (existing) {
-          return prev.map((i) =>
-            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-          );
-        }
-        return [...prev, { ...item, quantity: 1 }];
-      });
-    },
-    [canteenId]
-  );
+  const addItem = useCallback((item: MenuItem) => {
+    setItems((prev) => {
+      if (prev.length > 0 && prev[0].canteen_id !== item.canteen_id) {
+        return [{ ...item, quantity: 1 }];
+      }
+      const existing = prev.find((i) => i.id === item.id);
+      if (existing) {
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        );
+      }
+      return [...prev, { ...item, quantity: 1 }];
+    });
+    setCanteenId(item.canteen_id);
+  }, []);
 
   const removeItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id));

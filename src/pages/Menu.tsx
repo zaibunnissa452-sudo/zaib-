@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Loader2, Check } from "lucide-react";
+import { ArrowLeft, Plus, Loader2, Search } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { Canteen, MenuItem } from "../lib/types";
 import { useCart } from "../lib/cart";
@@ -15,6 +15,7 @@ export function Menu({ canteen, onBack }: MenuProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [query, setQuery] = useState("");
   const { addItem, items: cartItems, setCanteen: setCartCanteen } = useCart();
 
   useEffect(() => {
@@ -40,10 +41,11 @@ export function Menu({ canteen, onBack }: MenuProps) {
   }, [canteen.id]);
 
   const categories = ["All", ...Array.from(new Set(items.map((i) => i.category)))];
-  const filtered =
-    activeCategory === "All"
-      ? items
-      : items.filter((i) => i.category === activeCategory);
+  const filtered = items.filter(
+    (i) =>
+      (activeCategory === "All" || i.category === activeCategory) &&
+      i.name.toLowerCase().includes(query.trim().toLowerCase())
+  );
 
   const getQty = (id: string) =>
     cartItems.find((i) => i.id === id)?.quantity ?? 0;
@@ -96,6 +98,16 @@ export function Menu({ canteen, onBack }: MenuProps) {
             <p className="text-gray-400 text-sm mt-1">{canteen.location}</p>
           </div>
         </motion.div>
+
+        <div className="relative mb-4">
+          <Search className="w-4 h-4 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search food..."
+            className="w-full pl-11 pr-4 py-3 rounded-full bg-white/5 border border-white/10 text-sm outline-none focus:border-cyan/40"
+          />
+        </div>
 
         {/* Category tabs */}
         <div className="flex flex-wrap gap-2 mb-6">

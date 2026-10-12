@@ -94,7 +94,7 @@ export function Home({ onExplore }: HomeProps) {
           {/* Floating burger image */}
           <motion.div
             animate={{ y: [0, -20, 0], rotateY: [-12, 5, -12] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "ease-in-out" }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="relative z-10"
             style={{ transformStyle: "preserve-3d" }}
           >
@@ -108,14 +108,14 @@ export function Home({ onExplore }: HomeProps) {
           {/* Floating chips */}
           <motion.div
             animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "ease-in-out" }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="absolute top-[15%] right-[5%] glass-card px-4 py-2.5 text-[10px] tracking-[3px] font-bold text-gray-200"
           >
             FRESH
           </motion.div>
           <motion.div
             animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "ease-in-out", delay: 0.5 }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
             className="absolute bottom-[15%] left-[5%] glass-card px-4 py-2.5 text-[10px] tracking-[3px] font-bold text-lime"
           >
             FAST

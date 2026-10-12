@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
 import type { MenuItem } from "./types";
 
 export interface CartItem extends MenuItem {
@@ -13,7 +20,7 @@ interface CartContextValue {
   removeItem: (id: string) => void;
   decreaseItem: (id: string) => void;
   clearCart: () => void;
-  setCanteen: (name: string) => void;
+  setCanteen: (id: string, name: string) => void;
   total: number;
   count: number;
 }
@@ -26,30 +33,44 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [canteenName, setCanteenName] = useState<string | null>(null);
 
   const addItem = useCallback((item: MenuItem) => {
-    setItems((prev) => {
-      if (prev.length > 0 && prev[0].canteen_id !== item.canteen_id) {
-        return [{ ...item, quantity: 1 }];
+    setItems((previous) => {
+      // Do not silently replace a cart containing food from another canteen.
+      if (
+        previous.length > 0 &&
+        previous[0].canteen_id !== item.canteen_id
+      ) {
+        return previous;
       }
-      const existing = prev.find((i) => i.id === item.id);
+
+      const existing = previous.find(
+        (cartItem) => cartItem.id === item.id
+      );
+
       if (existing) {
-        return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        return previous.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
         );
       }
-      return [...prev, { ...item, quantity: 1 }];
+
+      return [...previous, { ...item, quantity: 1 }];
     });
-    setCanteenId(item.canteen_id);
   }, []);
 
   const removeItem = useCallback((id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+    setItems((previous) => previous.filter((item) => item.id !== id));
   }, []);
 
   const decreaseItem = useCallback((id: string) => {
-    setItems((prev) =>
-      prev
-        .map((i) => (i.id === id ? { ...i, quantity: i.quantity - 1 } : i))
-        .filter((i) => i.quantity > 0)
+    setItems((previous) =>
+      previous
+        .map((item) =>
+          item.id === id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   }, []);
 
@@ -59,14 +80,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCanteenName(null);
   }, []);
 
-  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const count = items.reduce((sum, i) => sum + i.quantity, 0);
+  const setCanteen = useCallback((id: string, name: string) => {
+    setCanteenId(id);
+    setCanteenName(name);
+  }, []);
 
-  const setCanteen = (name: string) => setCanteenName(name);
+  const total = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const count = items.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
 
   return (
     <CartContext.Provider
-      value={{ items, canteenId, canteenName, addItem, removeItem, decreaseItem, clearCart, total, count, setCanteen }}
+      value={{
+        items,
+        canteenId,
+        canteenName,
+        addItem,
+        removeItem,
+        decreaseItem,
+        clearCart,
+        setCanteen,
+        total,
+        count,
+      }}
     >
       {children}
     </CartContext.Provider>
@@ -74,7 +116,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 }
 
 export function useCart() {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart must be used within CartProvider");
-  return ctx;
+  const context = useContext(CartContext);
+
+  if (!context) {
+    throw new Error("useCart must be used within CartProvider");
+  }
+
+  return context;
 }

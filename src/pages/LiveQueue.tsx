@@ -3,22 +3,35 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Clock, Hash, ChefHat, PackageCheck, X, Loader2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { Order, OrderStatus } from "../lib/types";
+import { getFunctionErrorMessage } from "../lib/guestOrders";
 
-export function LiveQueue() {
-  const [orders, setOrders] = useState<Order[]>([]);
+interface LiveQueueProps {
+  trackingToken: string | null;
+}
+
+interface PublicQueueOrder {
+  id: string;
+  order_number: number;
+  items: Array<{ id: string; name: string; quantity: number }>;
+  status: OrderStatus;
+  queue_position: number;
+  estimated_wait_minutes: number;
+}
+
+export function LiveQueue({ trackingToken }: LiveQueueProps) {
+  const [orders, setOrders] = useState<PublicQueueOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [trackedOrder, setTrackedOrder] = useState<Order | null>(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
+  const [trackingError, setTrackingError] = useState<string | null>(null);
 
   const loadOrders = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .in("status", ["pending", "preparing", "ready"])
-      .order("created_at", { ascending: true });
+    const { data, error } = await supabase.rpc("get_public_live_queue");
     if (error) {
       setError(error.message);
     } else {
-      setOrders(data as Order[]);
+      setOrders((data ?? []) as PublicQueueOrder[]);
     }
     setLoading(false);
   }, []);
@@ -29,6 +42,39 @@ export function LiveQueue() {
     return () => clearInterval(interval);
   }, [loadOrders]);
 
+  useEffect(() => {
+    if (!trackingToken) {
+      setTrackedOrder(null);
+      setTrackingError(null);
+      setTrackingLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    const loadTrackedOrder = async () => {
+      setTrackingLoading(true);
+      const { data, error } = await supabase.functions.invoke<{ order: Order }>("guest-orders", {
+        body: { action: "track", trackingToken },
+      });
+      if (cancelled) return;
+      if (error) {
+        setTrackingError(await getFunctionErrorMessage(error, "We couldn't load this order. Check your tracking link and try again."));
+      } else if (data?.order) {
+        setTrackedOrder(data.order);
+        setTrackingError(null);
+      } else {
+        setTrackingError("We couldn't find this order. Check that you opened the correct tracking link.");
+      }
+      setTrackingLoading(false);
+    };
+
+    loadTrackedOrder();
+    const interval = setInterval(loadTrackedOrder, 5000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [trackingToken]);
   const statusConfig: Record<
     OrderStatus,
     { label: string; badge: string; icon: typeof Clock; color: string }
@@ -76,6 +122,32 @@ export function LiveQueue() {
           </p>
         </motion.div>
 
+        {trackingToken && (
+          <div className="glass rounded-2xl p-5 mb-8">
+            <div className="text-[10px] tracking-[4px] text-cyan font-bold mb-3">YOUR ORDER</div>
+            {trackingLoading && !trackedOrder ? (
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Loader2 className="w-4 h-4 animate-spin text-cyan" />
+                Loading your order...
+              </div>
+            ) : trackingError ? (
+              <p role="alert" className="text-sm text-rose">{trackingError}</p>
+            ) : trackedOrder ? (
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex-1">
+                  <div className="font-bold text-2xl text-white">Order #{trackedOrder.order_number}</div>
+                  <div className="text-sm text-gray-400 mt-1">
+                    {trackedOrder.items.map((item) => item.quantity + "x " + item.name).join(", ")}
+                  </div>
+                </div>
+                <span className="badge badge-preparing">{trackedOrder.status.replace("_", " ").toUpperCase()}</span>
+                {trackedOrder.status !== "ready" && trackedOrder.status !== "completed" && trackedOrder.status !== "cancelled" && (
+                  <div className="text-sm text-cyan">Estimated wait: {trackedOrder.estimated_wait_minutes}m</div>
+                )}
+              </div>
+            ) : null}
+          </div>
+        )}
         {orders.length === 0 ? (
           <div className="glass rounded-2xl p-16 text-center">
             <Clock className="w-12 h-12 mx-auto mb-4 text-gray-600" />

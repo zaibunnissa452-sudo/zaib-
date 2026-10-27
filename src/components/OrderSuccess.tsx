@@ -1,14 +1,29 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Hash, Clock, ArrowRight, X } from "lucide-react";
-import type { Order } from "../lib/types";
+import { CheckCircle2, Hash, Clock, ArrowRight, X, Copy, Check } from "lucide-react";
+import type { GuestOrder } from "../lib/guestOrders";
 
 interface OrderSuccessProps {
-  order: Order | null;
+  order: GuestOrder | null;
   onClose: () => void;
-  onViewQueue: () => void;
+  onViewQueue: (trackingToken: string) => void;
 }
 
 export function OrderSuccess({ order, onClose, onViewQueue }: OrderSuccessProps) {
+  const [copied, setCopied] = useState(false);
+
+  const copyTrackingLink = async () => {
+    if (!order) return;
+    const trackingUrl = new URL(window.location.href);
+    trackingUrl.searchParams.set("track", order.trackingToken);
+    try {
+      await navigator.clipboard.writeText(trackingUrl.toString());
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
     <AnimatePresence>
       {order && (
@@ -31,6 +46,7 @@ export function OrderSuccess({ order, onClose, onViewQueue }: OrderSuccessProps)
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
+                aria-label="Close order confirmation"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -48,7 +64,7 @@ export function OrderSuccess({ order, onClose, onViewQueue }: OrderSuccessProps)
                 Order Placed!
               </h3>
               <p className="text-center text-gray-400 text-sm mb-6">
-                Your order has been added to the queue
+                Your order is in the queue. Keep your tracking link private.
               </p>
 
               <div className="grid grid-cols-2 gap-3 mb-6">
@@ -80,6 +96,14 @@ export function OrderSuccess({ order, onClose, onViewQueue }: OrderSuccessProps)
                 </div>
               </div>
 
+              <button
+                onClick={copyTrackingLink}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 mb-4 rounded-xl border border-white/10 bg-white/5 text-xs font-bold text-gray-300 hover:bg-white/10 transition-colors"
+              >
+                {copied ? <Check className="w-4 h-4 text-lime" /> : <Copy className="w-4 h-4" />}
+                {copied ? "TRACKING LINK COPIED" : "COPY PRIVATE TRACKING LINK"}
+              </button>
+
               <div className="flex gap-3">
                 <button
                   onClick={onClose}
@@ -90,7 +114,7 @@ export function OrderSuccess({ order, onClose, onViewQueue }: OrderSuccessProps)
                 <button
                   onClick={() => {
                     onClose();
-                    onViewQueue();
+                    onViewQueue(order.trackingToken);
                   }}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-cyan to-violet text-white text-sm font-bold hover:shadow-[0_0_25px_rgba(0,229,255,0.3)] transition-all"
                 >

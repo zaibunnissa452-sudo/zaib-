@@ -18,16 +18,20 @@ export function Menu({ canteen, onBack }: MenuProps) {
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState("All");
   const [query, setQuery] = useState("");
+  const [cartNotice, setCartNotice] = useState<string | null>(null);
 
   const {
     addItem,
     items: cartItems,
     setCanteen: setCartCanteen,
+    canAddItem,
   } = useCart();
 
   useEffect(() => {
-    setCartCanteen(canteen.id, canteen.name);
-  }, [canteen.id, canteen.name, setCartCanteen]);
+    if (cartItems.length === 0 || cartItems[0].canteen_id === canteen.id) {
+      setCartCanteen(canteen.id, canteen.name);
+    }
+  }, [canteen.id, canteen.name, cartItems, setCartCanteen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -133,6 +137,9 @@ export function Menu({ canteen, onBack }: MenuProps) {
             <p className="text-gray-400 text-sm mt-1">
               {canteen.location}
             </p>
+            <p className={canteen.is_open ? "text-xs mt-2 font-bold text-lime" : "text-xs mt-2 font-bold text-rose"}>
+              {canteen.is_open ? "OPEN FOR ORDERS" : "CLOSED — ORDERS PAUSED"}
+            </p>
           </div>
         </motion.div>
 
@@ -161,6 +168,12 @@ export function Menu({ canteen, onBack }: MenuProps) {
             </button>
           ))}
         </div>
+
+        {cartNotice && (
+          <div role="alert" className="mb-4 rounded-xl border border-amber/20 bg-amber/5 p-3 text-sm text-amber">
+            {cartNotice}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <AnimatePresence mode="popLayout">
@@ -202,9 +215,17 @@ export function Menu({ canteen, onBack }: MenuProps) {
                     </div>
 
                     <button
-                      onClick={() => addItem(item)}
+                      onClick={() => {
+                        if (!canAddItem(item)) {
+                          setCartNotice("Your cart has items from another canteen. Clear the cart before adding food from this one.");
+                          return;
+                        }
+                        setCartNotice(null);
+                        addItem(item);
+                      }}
+                      disabled={!canteen.is_open}
                       aria-label={`Add ${item.name} to cart`}
-                      className="relative flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-cyan to-violet text-white hover:scale-110 active:scale-95 transition-transform shadow-[0_0_15px_rgba(0,229,255,0.3)]"
+                      className="relative flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-cyan to-violet text-white hover:scale-110 active:scale-95 transition-transform shadow-[0_0_15px_rgba(0,229,255,0.3)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {getQty(item.id) > 0 ? (
                         <span className="text-sm font-bold">

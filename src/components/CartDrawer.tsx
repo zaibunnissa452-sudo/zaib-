@@ -3,12 +3,66 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, ShoppingBag, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
 import { useCart } from "../lib/cart";
 import { supabase } from "../lib/supabase";
-import type { Order } from "../lib/types";
+import type { GuestOrder } from "../lib/guestOrders";
+import { getFunctionErrorMessage } from "../lib/guestOrders";
 
 interface CartDrawerProps {
   open: boolean;
   onClose: () => void;
-  onOrderPlaced: (order: Order) => void;
+  onOrderPlaced: (order: GuestOrder) => void;
+}
+
+interface RazorpayPaymentResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayCheckoutOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  prefill: { name?: string };
+  theme: { color: string };
+  handler: (response: RazorpayPaymentResponse) => void | Promise<void>;
+  modal: { ondismiss: () => void };
+}
+
+interface RazorpayCheckout {
+  open: () => void;
+}
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayCheckoutOptions) => RazorpayCheckout;
+  }
+}
+
+function loadRazorpayCheckout() {
+  return new Promise<boolean>((resolve) => {
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
+
+    const existingScript = document.querySelector<HTMLScriptElement>("script[data-razorpay-checkout]");
+    if (existingScript) {
+      existingScript.addEventListener("load", () => resolve(Boolean(window.Razorpay)), { once: true });
+      existingScript.addEventListener("error", () => resolve(false), { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.dataset.razorpayCheckout = "true";
+    script.onload = () => resolve(Boolean(window.Razorpay));
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
 }
 
 export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
@@ -20,60 +74,111 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
-    setPlacing(true);
-    setError(null);
 
     const canteenId = items[0].canteen_id;
-    const orderItems = items.map((i) => ({
-      id: i.id,
-      name: i.name,
-      price: i.price,
-      quantity: i.quantity,
-    }));
-
-    // Count existing orders for this canteen to get next order number
-    const { count } = await supabase
-      .from("orders")
-      .select("*", { count: "exact", head: true })
-      .eq("canteen_id", canteenId);
-
-    const orderNumber = (count ?? 0) + 1;
-
-    // Count pending/preparing orders to get queue position
-    const { count: activeCount } = await supabase
-      .from("orders")
-      .select("*", { count: "exact", head: true })
-      .eq("canteen_id", canteenId)
-      .in("status", ["pending", "preparing"]);
-
-    const queuePosition = (activeCount ?? 0) + 1;
-    const estimatedWait =
-      queuePosition * 8 + items.reduce((s, i) => s + i.prep_time_minutes * i.quantity, 0);
-
-    const { data, error: insertError } = await supabase
-      .from("orders")
-      .insert({
-        canteen_id: canteenId,
-        order_number: orderNumber,
-        items: orderItems,
-        total,
-        status: "pending",
-        customer_name: customerName || null,
-        queue_position: queuePosition,
-        estimated_wait_minutes: Math.min(estimatedWait, 99),
-      })
-      .select()
-      .maybeSingle();
-
-    if (insertError || !data) {
-      setError(insertError?.message ?? "Failed to place order");
-      setPlacing(false);
+    if (items.some((item) => item.canteen_id !== canteenId)) {
+      setError("Your cart contains items from different canteens. Clear the cart and choose one canteen.");
       return;
     }
 
-    onOrderPlaced(data as Order);
-    clearCart();
-    setPlacing(false);
+    setPlacing(true);
+    setError(null);
+
+    try {
+      const checkoutReady = await loadRazorpayCheckout();
+      if (!checkoutReady || !window.Razorpay) {
+        setError("Secure payment could not be loaded. Check your connection and try again.");
+        return;
+      }
+
+      const { data, error: checkoutError } = await supabase.functions.invoke<{
+        keyId: string;
+        payment: { orderId: string; amount: number; currency: string };
+        trackingToken: string;
+      }>("guest-orders", {
+        body: {
+          action: "create-payment",
+          canteenId,
+          customerName: customerName.trim(),
+          items: items.map((item) => ({ id: item.id, quantity: item.quantity })),
+        },
+      });
+
+      if (checkoutError) {
+        setError(await getFunctionErrorMessage(checkoutError, "We couldn't start secure payment. Please try again."));
+        return;
+      }
+
+      if (!data?.keyId || !data.payment?.orderId || !data.trackingToken) {
+        setError("We couldn't prepare secure checkout. Please try again.");
+        return;
+      }
+
+      if (data.payment.amount !== Math.round(total * 100)) {
+        setError("A menu price changed. Refresh your cart before paying.");
+        return;
+      }
+
+      let paymentReturned = false;
+      const checkout = new window.Razorpay({
+        key: data.keyId,
+        amount: data.payment.amount,
+        currency: data.payment.currency,
+        name: "LORDS SMART CANTEEN",
+        description: "Canteen order",
+        order_id: data.payment.orderId,
+        prefill: customerName.trim() ? { name: customerName.trim() } : {},
+        theme: { color: "#00e5ff" },
+        handler: async (paymentResponse) => {
+          paymentReturned = true;
+          setPlacing(true);
+          setError(null);
+
+          try {
+            const { data: verified, error: verifyError } = await supabase.functions.invoke<{
+              order: Omit<GuestOrder, "trackingToken">;
+            }>("guest-orders", {
+              body: {
+                action: "verify-payment",
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+              },
+            });
+
+            if (verifyError) {
+              setError(await getFunctionErrorMessage(verifyError, "We couldn't confirm the payment yet. Please contact the canteen before paying again."));
+              return;
+            }
+
+            if (!verified?.order) {
+              setError("We couldn't confirm the order yet. Please contact the canteen before paying again.");
+              return;
+            }
+
+            onOrderPlaced({ ...verified.order, trackingToken: data.trackingToken });
+            clearCart();
+          } catch {
+            setError("We couldn't confirm the payment yet. Please contact the canteen before paying again.");
+          } finally {
+            setPlacing(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            if (!paymentReturned) {
+              setError("Payment was not completed, so no order was placed.");
+            }
+          },
+        },
+      });
+
+      checkout.open();
+    } catch {
+      setError("We couldn't reach secure checkout. Check your connection and try again.");
+    } finally {
+      setPlacing(false);
+    }
   };
 
   return (
@@ -94,11 +199,13 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed top-0 right-0 bottom-0 w-full sm:w-[420px] bg-[#080810] border-l border-white/10 z-[70] flex flex-col"
           >
-            {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-white/10">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5 text-cyan" />
                 <h3 className="font-bold text-lg">Your Cart</h3>
+                {items.length > 0 && (
+                  <button onClick={clearCart} className="ml-2 text-xs text-gray-500 hover:text-rose transition-colors">Clear</button>
+                )}
               </div>
               <button
                 onClick={onClose}
@@ -114,7 +221,6 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
               </div>
             )}
 
-            {/* Items */}
             <div className="flex-1 overflow-y-auto p-5">
               {items.length === 0 ? (
                 <div className="text-center text-gray-500 py-20">
@@ -145,17 +251,13 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() =>
-                            item.quantity > 1
-                              ? decreaseItem(item.id)
-                              : removeItem(item.id)
+                            item.quantity > 1 ? decreaseItem(item.id) : removeItem(item.id)
                           }
                           className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="font-bold text-sm w-6 text-center">
-                          {item.quantity}
-                        </span>
+                        <span className="font-bold text-sm w-6 text-center">{item.quantity}</span>
                         <button
                           onClick={() => addItem(item)}
                           className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan to-violet flex items-center justify-center hover:scale-110 transition-transform"
@@ -169,7 +271,6 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
               )}
             </div>
 
-            {/* Footer */}
             {items.length > 0 && (
               <div className="border-t border-white/10 p-5 space-y-4">
                 {error && (
@@ -188,6 +289,9 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
                   <span className="text-gray-400 text-sm">Total</span>
                   <span className="text-2xl font-bold neon-cyan">₹{total}</span>
                 </div>
+                <p className="text-center text-xs text-gray-500">
+                  Secure online payment · UPI, cards and other available methods
+                </p>
                 <button
                   onClick={handleCheckout}
                   disabled={placing}
@@ -196,12 +300,12 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
                   {placing ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      PLACING ORDER...
+                      PREPARING PAYMENT...
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="w-4 h-4" />
-                      PLACE ORDER
+                      PAY & PLACE ORDER
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}

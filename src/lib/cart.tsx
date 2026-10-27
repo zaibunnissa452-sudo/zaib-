@@ -17,6 +17,7 @@ interface CartContextValue {
   canteenId: string | null;
   canteenName: string | null;
   addItem: (item: MenuItem) => void;
+  canAddItem: (item: MenuItem) => boolean;
   removeItem: (id: string) => void;
   decreaseItem: (id: string) => void;
   clearCart: () => void;
@@ -31,6 +32,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [canteenId, setCanteenId] = useState<string | null>(null);
   const [canteenName, setCanteenName] = useState<string | null>(null);
+
+  const canAddItem = useCallback(
+    (item: MenuItem) => items.length === 0 || items[0].canteen_id === item.canteen_id,
+    [items]
+  );
 
   const addItem = useCallback((item: MenuItem) => {
     setItems((previous) => {
@@ -102,6 +108,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         canteenId,
         canteenName,
         addItem,
+        canAddItem,
         removeItem,
         decreaseItem,
         clearCart,

@@ -10,30 +10,59 @@ import { Menu } from "./pages/Menu";
 import { LiveQueue } from "./pages/LiveQueue";
 import { OwnerDashboard } from "./pages/OwnerDashboard";
 import { CartProvider } from "./lib/cart";
-import type { Canteen, Order } from "./lib/types";
+import type { Canteen } from "./lib/types";
+import type { GuestOrder } from "./lib/guestOrders";
 
 type TabId = "home" | "canteens" | "menu" | "queue" | "owner";
 
+function readTrackingToken() {
+  const token = new URLSearchParams(window.location.search).get("track");
+  return token && /^[0-9a-f]{64}$/i.test(token) ? token : null;
+}
+
+function updateTrackingUrl(token: string | null) {
+  const url = new URL(window.location.href);
+  if (token) url.searchParams.set("track", token);
+  else url.searchParams.delete("track");
+  window.history.replaceState({}, "", url.toString());
+}
+
 function AppContent() {
-  const [tab, setTab] = useState<TabId>("home");
+  const [trackingToken, setTrackingToken] = useState<string | null>(() => readTrackingToken());
+  const [tab, setTab] = useState<TabId>(() => (readTrackingToken() ? "queue" : "home"));
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedCanteen, setSelectedCanteen] = useState<Canteen | null>(null);
-  const [recentOrder, setRecentOrder] = useState<Order | null>(null);
+  const [recentOrder, setRecentOrder] = useState<GuestOrder | null>(null);
 
   const handleNavigate = useCallback((next: TabId) => {
+    if (next !== "queue") {
+      setTrackingToken(null);
+      updateTrackingUrl(null);
+    }
     setTab(next);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const handleSelectCanteen = useCallback((canteen: Canteen) => {
+    setTrackingToken(null);
+    updateTrackingUrl(null);
     setSelectedCanteen(canteen);
     setTab("menu");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const handleOrderPlaced = useCallback((order: Order) => {
+  const handleOrderPlaced = useCallback((order: GuestOrder) => {
+    setTrackingToken(order.trackingToken);
+    updateTrackingUrl(order.trackingToken);
     setRecentOrder(order);
     setCartOpen(false);
+  }, []);
+
+  const handleTrackOrder = useCallback((token: string) => {
+    setTrackingToken(token);
+    setTab("queue");
+    updateTrackingUrl(token);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   return (
@@ -59,7 +88,7 @@ function AppContent() {
               Please select a canteen first.
             </div>
           )}
-          {tab === "queue" && <LiveQueue />}
+          {tab === "queue" && <LiveQueue trackingToken={trackingToken} />}
           {tab === "owner" && <OwnerDashboard />}
         </motion.div>
       </AnimatePresence>
@@ -73,7 +102,7 @@ function AppContent() {
       <OrderSuccess
         order={recentOrder}
         onClose={() => setRecentOrder(null)}
-        onViewQueue={() => handleNavigate("queue")}
+        onViewQueue={handleTrackOrder}
       />
     </div>
   );

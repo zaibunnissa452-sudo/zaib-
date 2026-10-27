@@ -8,7 +8,7 @@ const tabs: { id: TabId; label: string }[] = [
   { id: "canteens", label: "CANTEENS" },
   { id: "menu", label: "MENU" },
   { id: "queue", label: "LIVE QUEUE" },
-  { id: "owner", label: "OWNER" },
+  { id: "owner", label: "STAFF LOGIN" },
 ];
 
 interface NavProps {

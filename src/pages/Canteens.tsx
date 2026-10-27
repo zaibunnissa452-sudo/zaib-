@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin, ArrowRight, Utensils, Loader2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { Canteen } from "../lib/types";
+import { canteenImageFor } from "../lib/menuImages";
 
 interface CanteensProps {
   onSelectCanteen: (canteen: Canteen) => void;
@@ -22,7 +23,12 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
       if (error) {
         setError(error.message);
       } else {
-        setCanteens(data as Canteen[]);
+        setCanteens(
+          ((data ?? []) as Canteen[]).map((canteen) => ({
+            ...canteen,
+            image_url: canteenImageFor(canteen.name) ?? canteen.image_url,
+          }))
+        );
       }
       setLoading(false);
     }

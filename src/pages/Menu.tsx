@@ -5,6 +5,7 @@ import { ArrowLeft, Plus, Loader2, Search } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { Canteen, MenuItem } from "../lib/types";
 import { useCart } from "../lib/cart";
+import { canteenImageFor, menuImageFor } from "../lib/menuImages";
 
 interface MenuProps {
   canteen: Canteen;
@@ -47,7 +48,13 @@ export function Menu({ canteen, onBack }: MenuProps) {
       if (error) {
         setError(error.message);
       } else {
-        setItems((data ?? []) as MenuItem[]);
+        setItems(
+          (data ?? []).map((item) => ({
+            ...(item as MenuItem),
+            image_url:
+              menuImageFor(item.name) ?? (item as MenuItem).image_url,
+          }))
+        );
       }
 
       setLoading(false);
@@ -70,6 +77,8 @@ export function Menu({ canteen, onBack }: MenuProps) {
       (activeCategory === "All" || item.category === activeCategory) &&
       item.name.toLowerCase().includes(query.trim().toLowerCase())
   );
+
+  const canteenImage = canteenImageFor(canteen.name) ?? canteen.image_url;
 
   const getQty = (id: string) =>
     cartItems.find((item) => item.id === id)?.quantity ?? 0;
@@ -109,9 +118,9 @@ export function Menu({ canteen, onBack }: MenuProps) {
           transition={{ duration: 0.5 }}
           className="glass rounded-2xl p-6 mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-4"
         >
-          {canteen.image_url && (
+          {canteenImage && (
             <img
-              src={canteen.image_url}
+              src={canteenImage}
               alt={canteen.name}
               className="w-20 h-20 rounded-xl object-cover border border-white/10"
             />

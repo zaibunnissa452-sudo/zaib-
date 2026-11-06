@@ -4,7 +4,7 @@ import { X, Plus, Minus, ShoppingBag, Loader2, CheckCircle2, ArrowRight } from "
 import { useCart } from "../lib/cart";
 import { supabase } from "../lib/supabase";
 import type { GuestOrder } from "../lib/guestOrders";
-import { getFunctionErrorMessage } from "../lib/guestOrders";
+import { getFunctionErrorMessage, saveOrderToHistory } from "../lib/guestOrders";
 
 interface CartDrawerProps {
   open: boolean;
@@ -156,7 +156,9 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
               return;
             }
 
-            onOrderPlaced({ ...verified.order, trackingToken: data.trackingToken });
+            const completedOrder: GuestOrder = { ...verified.order, trackingToken: data.trackingToken };
+            saveOrderToHistory(completedOrder, canteenName ?? "Canteen");
+            onOrderPlaced(completedOrder);
             clearCart();
           } catch {
             setError("We couldn't confirm the payment yet. Please contact the canteen before paying again.");

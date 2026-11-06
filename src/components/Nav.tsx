@@ -1,13 +1,13 @@
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "../lib/cart";
 
-type TabId = "home" | "canteens" | "menu" | "queue" | "owner";
+type TabId = "home" | "canteens" | "menu" | "queue" | "history" | "owner";
 
 const tabs: { id: TabId; label: string }[] = [
   { id: "home", label: "HOME" },
   { id: "canteens", label: "CANTEENS" },
-  { id: "menu", label: "MENU" },
   { id: "queue", label: "LIVE QUEUE" },
+  { id: "history", label: "MY ORDERS" },
   { id: "owner", label: "STAFF LOGIN" },
 ];
 

@@ -9,11 +9,12 @@ import { Canteens } from "./pages/Canteens";
 import { Menu } from "./pages/Menu";
 import { LiveQueue } from "./pages/LiveQueue";
 import { OwnerDashboard } from "./pages/OwnerDashboard";
+import { OrderHistory } from "./pages/OrderHistory";
 import { CartProvider } from "./lib/cart";
 import type { Canteen } from "./lib/types";
 import type { GuestOrder } from "./lib/guestOrders";
 
-type TabId = "home" | "canteens" | "menu" | "queue" | "owner";
+type TabId = "home" | "canteens" | "menu" | "queue" | "history" | "owner";
 
 function readTrackingToken() {
   const token = new URLSearchParams(window.location.search).get("track");
@@ -68,7 +69,11 @@ function AppContent() {
   return (
     <div className="min-h-screen relative">
       <Background />
-      <Nav active={tab} onNavigate={handleNavigate} onCartClick={() => setCartOpen(true)} />
+      <Nav
+        active={tab === "menu" ? "canteens" : tab}
+        onNavigate={handleNavigate}
+        onCartClick={() => setCartOpen(true)}
+      />
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -89,6 +94,7 @@ function AppContent() {
             </div>
           )}
           {tab === "queue" && <LiveQueue trackingToken={trackingToken} />}
+          {tab === "history" && <OrderHistory onTrackOrder={handleTrackOrder} />}
           {tab === "owner" && <OwnerDashboard />}
         </motion.div>
       </AnimatePresence>

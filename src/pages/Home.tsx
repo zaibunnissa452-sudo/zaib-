@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Zap, Clock } from "lucide-react";
+import { ArrowRight, Clock3, CreditCard, ShoppingBag } from "lucide-react";
 
 interface HomeProps {
   onExplore: () => void;
@@ -7,8 +7,8 @@ interface HomeProps {
 
 export function Home({ onExplore }: HomeProps) {
   return (
-    <div className="min-h-screen flex items-center pt-16 px-4 sm:px-8 relative z-10">
-      <div className="flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl mx-auto gap-8 lg:gap-4">
+    <div className="min-h-screen flex items-center pt-20 pb-24 md:pb-12 px-4 sm:px-8 relative z-10">
+      <div className="flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl mx-auto gap-8 lg:gap-12">
         {/* Left — Copy */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -17,52 +17,48 @@ export function Home({ onExplore }: HomeProps) {
           className="w-full lg:w-1/2"
         >
           <div className="flex items-center gap-2 mb-5">
-            <span className="w-2 h-2 rounded-full bg-lime pulse-dot shadow-[0_0_12px_#b7ff00]" />
-            <span className="text-[10px] tracking-[4px] text-cyan font-bold">
-              LORDS CAMPUS FOOD SYSTEM
+            <span className="w-2 h-2 rounded-full bg-lime pulse-dot" />
+            <span className="text-xs tracking-[0.18em] text-cyan font-bold">
+              FRESH FROM YOUR CAMPUS CANTEENS
             </span>
           </div>
 
-          <h1 className="text-[clamp(2.8rem,7vw,6.5rem)] font-bold leading-[0.88] tracking-tight font-['Space_Grotesk']">
-            ORDER
+          <h1 className="text-[clamp(2.8rem,7vw,6rem)] font-bold leading-[0.98] tracking-tight font-['Space_Grotesk']">
+            Good food.
             <br />
-            <span className="neon-cyan">SMART.</span>
-            <br />
-            SKIP THE WAIT.
+            <span className="neon-cyan">Less waiting.</span>
           </h1>
 
-          <p className="max-w-md text-gray-400 text-base leading-relaxed mt-6">
-            Next-generation campus ordering designed for the Lords student
-            community. Browse canteens, order in seconds, and track your food in
-            real-time.
+          <p className="max-w-lg text-gray-400 text-base sm:text-lg leading-relaxed mt-6">
+            Browse campus menus, order your favourites, and follow your order
+            from preparation to pickup—all in one place.
           </p>
 
           <div className="flex flex-wrap gap-3 mt-8">
             <button
               onClick={onExplore}
-              className="group flex items-center gap-3 px-6 py-4 rounded-full bg-gradient-to-r from-cyan via-violet to-magenta text-white font-bold text-sm tracking-wider shadow-[0_0_35px_rgba(0,229,255,0.25)] hover:shadow-[0_0_55px_rgba(0,229,255,0.5)] hover:scale-105 transition-all duration-400"
+              className="group flex items-center gap-3 min-h-12 px-6 py-3.5 rounded-full bg-gradient-to-r from-cyan to-violet text-white font-bold text-sm tracking-wide shadow-[0_0_35px_rgba(0,229,255,0.25)] hover:shadow-[0_0_55px_rgba(0,229,255,0.5)] hover:brightness-110 transition-all"
             >
-              EXPLORE CANTEENS
+              Browse canteens
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
 
-          {/* Feature pills */}
-          <div className="flex flex-wrap gap-4 mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-10 max-w-2xl">
             {[
-              { icon: Zap, label: "Instant Ordering" },
-              { icon: Clock, label: "Live Queue Tracking" },
-              { icon: Sparkles, label: "Zero Wait Pickup" },
-            ].map((f, i) => (
+              { icon: ShoppingBag, label: "Order ahead" },
+              { icon: Clock3, label: "Live order updates" },
+              { icon: CreditCard, label: "Secure checkout" },
+            ].map((feature, i) => (
               <motion.div
-                key={f.label}
+                key={feature.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
-                className="glass-card flex items-center gap-2 px-4 py-2.5"
+                className="glass-card flex items-center gap-3 px-4 py-3"
               >
-                <f.icon className="w-4 h-4 text-cyan" />
-                <span className="text-xs text-gray-300 font-medium">{f.label}</span>
+                <feature.icon className="w-4 h-4 text-cyan flex-shrink-0" />
+                <span className="text-xs text-gray-300 font-medium">{feature.label}</span>
               </motion.div>
             ))}
           </div>
@@ -73,62 +69,46 @@ export function Home({ onExplore }: HomeProps) {
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full lg:w-1/2 flex items-center justify-center relative h-[400px] lg:h-[500px]"
-          style={{ perspective: "1400px" }}
+          className="w-full lg:w-1/2 flex items-center justify-center relative min-h-[320px] sm:min-h-[440px]"
         >
-          {/* Orbit rings */}
           <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[320px] h-[320px] sm:w-[380px] sm:h-[380px] rounded-full border border-cyan/20"
-            style={{ transform: "rotateX(68deg)" }}
-          />
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute w-[240px] h-[240px] sm:w-[300px] sm:h-[300px] rounded-full border border-violet/20"
-            style={{ transform: "rotateY(68deg)" }}
-          />
-          <div className="absolute w-[200px] h-[200px] rounded-full bg-cyan/10 blur-[50px]" />
-
-          {/* Floating burger image */}
-          <motion.div
-            animate={{ y: [0, -20, 0], rotateY: [-12, 5, -12] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative z-10"
-            style={{ transformStyle: "preserve-3d" }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative w-full max-w-[520px] aspect-[1.12] overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-black/40"
+            onPointerMove={(event) => {
+              const bounds = event.currentTarget.getBoundingClientRect();
+              const spotlight = event.currentTarget.querySelector<HTMLElement>(".hero-spotlight");
+              if (!spotlight) return;
+              const x = event.clientX - bounds.left;
+              const y = event.clientY - bounds.top;
+              spotlight.style.backgroundImage = `radial-gradient(240px circle at ${x}px ${y}px, rgba(0, 229, 255, 0.2), transparent 78%)`;
+            }}
+            onPointerLeave={(event) => {
+              const spotlight = event.currentTarget.querySelector<HTMLElement>(".hero-spotlight");
+              if (spotlight) spotlight.style.backgroundImage = "none";
+            }}
           >
             <img
-              src="https://images.pexels.com/photos/18987002/pexels-photo-18987002.jpeg?auto=compress&cs=tinysrgb&h=400&w=400"
-              alt="Gourmet burger"
-              className="w-[240px] h-[240px] sm:w-[300px] sm:h-[300px] object-cover rounded-full border-2 border-white/10 shadow-[0_40px_80px_rgba(0,0,0,0.8)]"
+              src="/menu-images/chicken-burger.jpg"
+              alt="Freshly made chicken burger served with crispy greens"
+              className="absolute inset-0 w-full h-full object-cover"
             />
-          </motion.div>
-
-          {/* Floating chips */}
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[15%] right-[5%] glass-card px-4 py-2.5 text-[10px] tracking-[3px] font-bold text-gray-200"
-          >
-            FRESH
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute bottom-[15%] left-[5%] glass-card px-4 py-2.5 text-[10px] tracking-[3px] font-bold text-lime"
-          >
-            FAST
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
+            <div
+              aria-hidden="true"
+              className="hero-spotlight absolute inset-0"
+            />
+            <div className="absolute left-5 bottom-5 right-5">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md">
+                <span className="h-2 w-2 rounded-full bg-lime" />
+                Made fresh on campus
+              </span>
+            </div>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 h-11 border-t border-white/10 flex justify-center gap-8 sm:gap-16 items-center text-[9px] tracking-[3px] text-gray-600 z-40 bg-[#03030580] backdrop-blur-md">
-        <span>SMART ORDERING</span>
-        <span className="hidden sm:inline">REAL-TIME QUEUE</span>
-        <span>LESS WAITING</span>
-      </div>
     </div>
   );
 }

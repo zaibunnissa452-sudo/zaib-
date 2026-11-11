@@ -365,7 +365,7 @@ export function OwnerDashboard() {
       let query = supabase
         .from("orders")
         .select(
-          "id,canteen_id,order_number,items,total,status,customer_name,queue_position,estimated_wait_minutes,created_at,updated_at",
+          "id,canteen_id,order_number,items,total,status,queue_position,estimated_wait_minutes,created_at,updated_at",
         )
         .order("created_at", { ascending: false })
         .limit(1000);
@@ -463,7 +463,7 @@ export function OwnerDashboard() {
       setMenuItems((prev) =>
         prev.map((m) => (m.id === item.id ? { ...m, is_available: !m.is_available } : m)),
       );
-    }
+    } else setMenuError(error.message);
     setTogglingItem(null);
   };
 
@@ -475,7 +475,9 @@ export function OwnerDashboard() {
 
   const savePrice = async (item: MenuItem) => {
     const newPrice = parseFloat(priceInput);
-    if (!isNaN(newPrice) && newPrice !== item.price) {
+    if (!Number.isFinite(newPrice) || newPrice <= 0) {
+      setMenuError("Enter a valid price greater than zero.");
+    } else if (newPrice !== item.price) {
       const { error } = await supabase
         .from("menu_items")
         .update({ price: newPrice })
@@ -484,7 +486,7 @@ export function OwnerDashboard() {
         setMenuItems((prev) =>
           prev.map((m) => (m.id === item.id ? { ...m, price: newPrice } : m)),
         );
-      }
+      } else setMenuError(error.message);
     }
     setEditingPrice(null);
   };
@@ -498,20 +500,16 @@ export function OwnerDashboard() {
 
   // ── Tab: History ───────────────────────────────────────────────────────────
   const loadHistory = useCallback(async () => {
-    if (!effectiveCanteenId) return;
+    if (!staffRole) return;
     setHistoryLoading(true);
     setHistoryError(null);
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .in("status", ["completed", "cancelled"])
-      .eq("canteen_id", effectiveCanteenId)
-      .order("created_at", { ascending: false })
-      .limit(50);
+    const { data, error } = await supabase.rpc("get_staff_order_history", {
+      p_canteen_id: effectiveCanteenId,
+    });
     if (error) setHistoryError(error.message);
     else setHistoryOrders((data as Order[]) ?? []);
     setHistoryLoading(false);
-  }, [effectiveCanteenId]);
+  }, [effectiveCanteenId, staffRole]);
 
   useEffect(() => {
     if (accessState === "authorized" && activeTab === "history") loadHistory();

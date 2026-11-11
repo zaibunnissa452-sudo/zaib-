@@ -83,6 +83,7 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
 
     setPlacing(true);
     setError(null);
+    let checkoutOpened = false;
 
     try {
       const checkoutReady = await loadRazorpayCheckout();
@@ -170,16 +171,18 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
           ondismiss: () => {
             if (!paymentReturned) {
               setError("Payment was not completed, so no order was placed.");
+              setPlacing(false);
             }
           },
         },
       });
 
       checkout.open();
+      checkoutOpened = true;
     } catch {
       setError("We couldn't reach secure checkout. Check your connection and try again.");
     } finally {
-      setPlacing(false);
+      if (!checkoutOpened) setPlacing(false);
     }
   };
 

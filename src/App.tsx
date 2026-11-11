@@ -13,6 +13,7 @@ import { OrderHistory } from "./pages/OrderHistory";
 import { CartProvider } from "./lib/cart";
 import type { Canteen } from "./lib/types";
 import type { GuestOrder } from "./lib/guestOrders";
+import { PhotographySite } from "./pages/PhotographySite";
 
 type TabId = "home" | "canteens" | "menu" | "queue" | "history" | "owner";
 
@@ -121,6 +122,10 @@ function AppContent() {
 }
 
 export default function App() {
+  if (window.location.pathname.replace(/\/+$/, "") === "/photography") {
+    return <PhotographySite />;
+  }
+
   return (
     <CartProvider>
       <AppContent />

@@ -41,7 +41,7 @@ export function OrderHistory({ onTrackOrder }: OrderHistoryProps) {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-8 relative z-10">
+    <div className="app-page min-h-screen pt-24 pb-16 px-4 sm:px-8 relative z-10">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <motion.div
@@ -55,7 +55,7 @@ export function OrderHistory({ onTrackOrder }: OrderHistoryProps) {
           </div>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-4xl sm:text-5xl font-bold tracking-tight font-['Space_Grotesk'] mb-2">
+              <h2 className="page-title text-4xl sm:text-5xl font-bold tracking-tight font-['Space_Grotesk'] mb-2">
                 Order History
               </h2>
               <p className="text-gray-400">

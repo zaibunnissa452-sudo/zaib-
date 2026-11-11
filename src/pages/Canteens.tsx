@@ -74,7 +74,7 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-8 relative z-10">
+    <div className="app-page min-h-screen pt-24 pb-16 px-4 sm:px-8 relative z-10">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -84,7 +84,7 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
           <div className="text-[10px] tracking-[4px] text-cyan font-bold mb-3">
             SELECT YOUR CANTEEN
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight font-['Space_Grotesk'] mb-2">
+          <h2 className="page-title text-4xl sm:text-5xl font-bold tracking-tight font-['Space_Grotesk'] mb-2">
             Campus Canteens
           </h2>
           <p className="text-gray-400 mb-8">
@@ -108,7 +108,7 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               onClick={() => onSelectCanteen(canteen)}
-              className="glass-card text-left overflow-hidden group relative cursor-pointer"
+              className="glass-card liquid-tilt-card text-left overflow-hidden group relative cursor-pointer"
             >
               <div className="relative h-48 overflow-hidden rounded-t-[20px]">
                 <img

@@ -6,13 +6,13 @@ The menu photos are stored locally in `public/menu-images` and cropped for the m
 
 - Chicken Manchurian — Roman Odintsov: https://www.pexels.com/photo/manchurian-chinese-dish-5339079/
 - Chicken Lollipop — Kunal Lakhotia: https://www.pexels.com/photo/crispy-chicken-lollipops-with-spicy-dip-29631422/
-- Chicken 65 — Alankrit Saini: https://www.pexels.com/photo/close-up-of-crispy-fried-chicken-on-plate-33254639/
+- Chicken 65 — Chait Goli: https://www.pexels.com/photo/fried-chicken-biryani-with-lemons-and-peppers-7353380/
 - Chilli Chicken — Kunal Lakhotia: https://www.pexels.com/photo/delicious-indo-chinese-chilli-chicken-dish-28674534/
 - Veg Fried Rice — Sóc Năng Động: https://www.pexels.com/photo/delicious-plate-of-vegetable-fried-rice-garnished-36293910/
-- Double Egg Noodles — Pratik Prasad: https://www.pexels.com/photo/noodles-with-vegetables-and-hard-boiled-egg-12455269/
+- Double Egg Noodles — Shubhojit Das: https://www.pexels.com/photo/stir-fried-noodles-with-vegetables-37165674/
 - Schezwan Chicken — Anil Sharma: https://www.pexels.com/photo/delicious-indo-chinese-schezwan-chicken-stir-fry-30604610/
 - Chicken Noodles — Nadin Sh: https://www.pexels.com/photo/close-up-of-chicken-noodles-dish-24738508/
-- Schezwan Chicken Fried Rice — Markus Winkler: https://www.pexels.com/photo/cooked-rice-with-chicken-and-vegetables-on-a-white-plate-19792090/
+- Schezwan Chicken Fried Rice — Nadim Shaikh: https://www.pexels.com/photo/appetizing-asian-dish-with-rice-7758253/
 - Samosa — Shameel mukkath: https://www.pexels.com/photo/a-close-up-shot-of-a-plate-of-delicious-samosa-14883757/
 - Hot Dog — Polina Tankilevitch: [Pinterest pin](https://in.pinterest.com/pin/788904059763651996/) links to the original [Pexels photo](https://www.pexels.com/photo/hotdog-sandwiches-on-white-background-4518650/).
 - Chicken Burger — Manav Chahal: [Pinterest pin](https://in.pinterest.com/pin/photo-by-manav-chahal-on-pexels--890446157577264280/) links to the original [Pexels photo](https://www.pexels.com/photo/close-up-of-a-chicken-burger-with-lettuce-and-tomato-19737927/).

@@ -202,7 +202,7 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="cart-title"
-            className="fixed top-0 right-0 bottom-0 w-full sm:w-[420px] bg-[#080810] border-l border-white/10 z-[70] flex flex-col"
+            className="liquid-drawer fixed top-0 right-0 bottom-0 w-full sm:top-4 sm:right-4 sm:bottom-4 sm:w-[420px] sm:rounded-[28px] z-[70] flex flex-col"
           >
             <div className="flex items-center justify-between p-5 border-b border-white/10">
               <div className="flex items-center gap-2">

@@ -746,7 +746,7 @@ export function OwnerDashboard() {
   // ═══════════════════════════════════════════════════════════════════════════
 
   return (
-    <div className="min-h-screen pt-20 pb-16 px-4 sm:px-8 relative z-10">
+    <div className="app-page min-h-screen pt-20 pb-16 px-4 sm:px-8 relative z-10">
       <div className="max-w-6xl mx-auto">
 
         {/* ── Header ── */}
@@ -760,7 +760,7 @@ export function OwnerDashboard() {
             <div className="text-[10px] tracking-[4px] text-cyan font-bold mb-1">
               {staffRole === "auditor" ? "AUDITOR DASHBOARD · READ ONLY" : "OWNER DASHBOARD"}
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight font-['Space_Grotesk']">
+            <h1 className="page-title text-3xl sm:text-4xl font-bold tracking-tight font-['Space_Grotesk']">
               {staffRole === "auditor" ? "Audit View" : "Canteen Control"}
             </h1>
           </div>

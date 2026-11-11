@@ -78,12 +78,18 @@ function AppContent() {
       <AnimatePresence mode="wait">
         <motion.div
           key={tab}
-          initial={{ opacity: 0, y: 10 }}
+          className="app-page-stage"
+          initial={{ opacity: 0, y: 14, rotateX: 0.8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
         >
-          {tab === "home" && <Home onExplore={() => handleNavigate("canteens")} />}
+          {tab === "home" && (
+            <Home
+              onExplore={() => handleNavigate("canteens")}
+              onTrackOrder={() => handleNavigate("queue")}
+            />
+          )}
           {tab === "canteens" && <Canteens onSelectCanteen={handleSelectCanteen} />}
           {tab === "menu" && selectedCanteen && (
             <Menu canteen={selectedCanteen} onBack={() => handleNavigate("canteens")} />

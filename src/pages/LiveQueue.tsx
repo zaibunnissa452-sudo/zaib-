@@ -147,7 +147,7 @@ export function LiveQueue({ trackingToken }: LiveQueueProps) {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-8 relative z-10">
+    <div className="app-page min-h-screen pt-24 pb-16 px-4 sm:px-8 relative z-10">
       <div className="max-w-4xl mx-auto">
 
         {/* ── Header ── */}
@@ -160,7 +160,7 @@ export function LiveQueue({ trackingToken }: LiveQueueProps) {
             <span className="w-2 h-2 rounded-full bg-cyan pulse-dot shadow-[0_0_12px_#00e5ff]" />
             <span className="text-[10px] tracking-[4px] text-cyan font-bold">LIVE QUEUE</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight font-['Space_Grotesk'] mb-2">
+          <h2 className="page-title text-4xl sm:text-5xl font-bold tracking-tight font-['Space_Grotesk'] mb-2">
             Live Order Queue
           </h2>
           <p className="text-gray-400 mb-8">

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import {
   ClipboardList,
   Home as HomeIcon,
@@ -29,7 +30,7 @@ export function Nav({ active, onNavigate, onCartClick }: NavProps) {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 sm:px-6 z-50 border-b border-white/10 bg-[#05050880] backdrop-blur-xl">
+      <nav className="liquid-nav fixed top-3 left-3 right-3 h-16 flex items-center justify-between px-4 sm:px-6 z-50 rounded-2xl border">
         <div className="flex items-center gap-6 sm:gap-8">
           <button
             type="button"
@@ -52,7 +53,11 @@ export function Nav({ active, onNavigate, onCartClick }: NavProps) {
             >
               {t.label.toUpperCase()}
               {active === t.id && (
-                <div className="h-0.5 mt-1 bg-cyan rounded-full shadow-[0_0_8px_#00e5ff]" />
+                <motion.div
+                  layoutId="desktop-nav-indicator"
+                  className="mt-1 h-0.5 rounded-full bg-cyan shadow-[0_0_8px_#00e5ff]"
+                  transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                />
               )}
             </button>
           ))}
@@ -78,7 +83,7 @@ export function Nav({ active, onNavigate, onCartClick }: NavProps) {
 
       <nav
         aria-label="Main navigation"
-        className="mobile-nav fixed bottom-0 left-0 right-0 z-50 grid grid-cols-5 border-t border-white/10 bg-[#050508f5] backdrop-blur-xl md:hidden"
+        className="liquid-nav mobile-nav fixed bottom-3 left-3 right-3 z-50 grid grid-cols-5 rounded-2xl border md:hidden"
       >
         {tabs.map(({ id, shortLabel, icon: Icon }) => (
           <button
@@ -86,12 +91,20 @@ export function Nav({ active, onNavigate, onCartClick }: NavProps) {
             type="button"
             onClick={() => onNavigate(id)}
             aria-current={active === id ? "page" : undefined}
-            className={`flex min-h-16 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold transition-colors ${
+            className={`relative flex min-h-16 flex-col items-center justify-center gap-1 px-1 text-[10px] font-semibold transition-colors ${
               active === id ? "text-cyan" : "text-gray-500 hover:text-gray-200"
             }`}
           >
-            <Icon className="h-5 w-5" aria-hidden="true" />
-            <span>{shortLabel}</span>
+            {active === id && (
+              <motion.span
+                layoutId="mobile-nav-indicator"
+                aria-hidden="true"
+                className="absolute inset-1 rounded-xl border border-cyan/15 bg-cyan/[0.07]"
+                transition={{ type: "spring", stiffness: 460, damping: 34 }}
+              />
+            )}
+            <Icon className="relative z-10 h-5 w-5" aria-hidden="true" />
+            <span className="relative z-10">{shortLabel}</span>
           </button>
         ))}
       </nav>

@@ -41,7 +41,7 @@ export function OrderSuccess({ order, onClose, onViewQueue }: OrderSuccessProps)
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.85, opacity: 0, y: 30 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="glass rounded-3xl p-8 max-w-md w-full pointer-events-auto relative"
+              className="glass liquid-dialog rounded-3xl p-8 max-w-md w-full pointer-events-auto relative"
             >
               <button
                 onClick={onClose}

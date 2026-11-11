@@ -109,7 +109,7 @@ export function Menu({ canteen, onBack }: MenuProps) {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-24 px-4 sm:px-8 relative z-10">
+    <div className="app-page min-h-screen pt-20 pb-24 px-4 sm:px-8 relative z-10">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <button
@@ -136,7 +136,7 @@ export function Menu({ canteen, onBack }: MenuProps) {
           )}
 
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold font-['Space_Grotesk']">
+            <h2 className="page-title text-2xl sm:text-3xl font-bold font-['Space_Grotesk']">
               {canteen.name}
             </h2>
             <p className="text-gray-400 text-sm mt-1">
@@ -209,7 +209,7 @@ export function Menu({ canteen, onBack }: MenuProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ delay: index * 0.05, duration: 0.3 }}
-                className="glass-card min-h-32 p-3 sm:p-4 flex gap-3 sm:gap-4"
+                className="glass-card liquid-tilt-card min-h-32 p-3 sm:p-4 flex gap-3 sm:gap-4"
               >
                 {item.image_url && (
                   <img

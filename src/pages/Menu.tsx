@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Loader2, Search } from "lucide-react";
+import { ArrowLeft, Plus, Loader2, Search, X, Utensils } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { Canteen, MenuItem } from "../lib/types";
 import { useCart } from "../lib/cart";
@@ -76,6 +76,11 @@ export function Menu({ canteen, onBack }: MenuProps) {
     ...Array.from(new Set(items.map((item) => item.category))),
   ];
 
+  const getCategoryCount = (category: string) =>
+    category === "All"
+      ? items.length
+      : items.filter((item) => item.category === category).length;
+
   const filtered = items.filter(
     (item) =>
       (activeCategory === "All" || item.category === activeCategory) &&
@@ -148,26 +153,45 @@ export function Menu({ canteen, onBack }: MenuProps) {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search food..."
-            className="w-full pl-11 pr-4 py-3 rounded-full bg-white/5 border border-white/10 text-sm outline-none focus:border-cyan/40"
+            aria-label="Search menu items"
+            placeholder="Search dishes..."
+            className="w-full min-h-12 pl-11 pr-12 py-3 rounded-full bg-white/5 border border-white/10 text-sm outline-none focus:border-cyan/40"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          )}
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="mb-4 flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Filter menu by category">
           {categories.map((category) => (
             <button
+              type="button"
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
+              aria-pressed={activeCategory === category}
+              className={`flex min-h-10 flex-shrink-0 items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wider transition-all duration-300 ${
                 activeCategory === category
                   ? "bg-cyan/15 text-cyan border border-cyan/40 shadow-[0_0_15px_rgba(0,229,255,0.2)]"
                   : "bg-white/5 text-gray-500 border border-white/10 hover:border-white/20"
               }`}
             >
-              {category.toUpperCase()}
+              <span>{category}</span>
+              <span className="text-[10px] opacity-70">{getCategoryCount(category)}</span>
             </button>
           ))}
         </div>
+
+        <p className="mb-4 text-xs text-gray-500" aria-live="polite">
+          {filtered.length} {filtered.length === 1 ? "dish" : "dishes"}
+          {activeCategory !== "All" ? ` in ${activeCategory}` : ""}
+        </p>
 
         {cartNotice && (
           <div role="alert" className="mb-4 rounded-xl border border-amber/20 bg-amber/5 p-3 text-sm text-amber">
@@ -185,13 +209,14 @@ export function Menu({ canteen, onBack }: MenuProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ delay: index * 0.05, duration: 0.3 }}
-                className="glass-card p-4 flex gap-4"
+                className="glass-card min-h-32 p-3 sm:p-4 flex gap-3 sm:gap-4"
               >
                 {item.image_url && (
                   <img
                     src={item.image_url}
                     alt={item.name}
-                    className="w-24 h-24 rounded-xl object-cover border border-white/10 flex-shrink-0"
+                    loading="lazy"
+                    className="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-white/10 flex-shrink-0"
                   />
                 )}
 
@@ -209,8 +234,8 @@ export function Menu({ canteen, onBack }: MenuProps) {
                       <span className="text-cyan font-bold text-lg">
                         ₹{item.price}
                       </span>
-                      <span className="text-gray-600 text-xs ml-2">
-                        ~{item.prep_time_minutes} min
+                      <span className="text-gray-500 text-xs ml-2">
+                        {item.prep_time_minutes} min
                       </span>
                     </div>
 
@@ -225,7 +250,7 @@ export function Menu({ canteen, onBack }: MenuProps) {
                       }}
                       disabled={!canteen.is_open}
                       aria-label={`Add ${item.name} to cart`}
-                      className="relative flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-cyan to-violet text-white hover:scale-110 active:scale-95 transition-transform shadow-[0_0_15px_rgba(0,229,255,0.3)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+                      className="relative flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan to-violet text-white hover:scale-105 active:scale-95 transition-transform shadow-[0_0_15px_rgba(0,229,255,0.3)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {getQty(item.id) > 0 ? (
                         <span className="text-sm font-bold">
@@ -243,8 +268,26 @@ export function Menu({ canteen, onBack }: MenuProps) {
         </div>
 
         {filtered.length === 0 && (
-          <div className="text-center text-gray-500 py-20">
-            No items available in this category.
+          <div className="glass rounded-2xl px-6 py-12 text-center">
+            <Utensils className="mx-auto mb-4 h-10 w-10 text-gray-500" aria-hidden="true" />
+            <h3 className="text-lg font-bold text-white">
+              {query ? "No matching dishes" : "No dishes available"}
+            </h3>
+            <p className="mt-2 text-sm text-gray-400">
+              {query ? `We couldn’t find anything for “${query}”.` : "There are no items in this category right now."}
+            </p>
+            {(query || activeCategory !== "All") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery("");
+                  setActiveCategory("All");
+                }}
+                className="mt-5 min-h-11 rounded-full border border-white/15 px-5 text-sm font-semibold text-cyan transition-colors hover:bg-white/5"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
         )}
       </div>

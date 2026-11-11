@@ -199,18 +199,23 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-title"
             className="fixed top-0 right-0 bottom-0 w-full sm:w-[420px] bg-[#080810] border-l border-white/10 z-[70] flex flex-col"
           >
             <div className="flex items-center justify-between p-5 border-b border-white/10">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5 text-cyan" />
-                <h3 className="font-bold text-lg">Your Cart</h3>
+                <h3 id="cart-title" className="font-bold text-lg">Your Cart</h3>
                 {items.length > 0 && (
-                  <button onClick={clearCart} className="ml-2 text-xs text-gray-500 hover:text-rose transition-colors">Clear</button>
+                  <button type="button" onClick={clearCart} className="ml-2 min-h-10 px-2 text-xs text-gray-500 hover:text-rose transition-colors">Clear</button>
                 )}
               </div>
               <button
+                type="button"
                 onClick={onClose}
+                aria-label="Close cart"
                 className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
               >
                 <X className="w-4 h-4" />
@@ -252,16 +257,20 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
                       </div>
                       <div className="flex items-center gap-2">
                         <button
+                          type="button"
                           onClick={() =>
                             item.quantity > 1 ? decreaseItem(item.id) : removeItem(item.id)
                           }
+                          aria-label={`Remove one ${item.name}`}
                           className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors"
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
                         <span className="font-bold text-sm w-6 text-center">{item.quantity}</span>
                         <button
+                          type="button"
                           onClick={() => addItem(item)}
+                          aria-label={`Add one ${item.name}`}
                           className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan to-violet flex items-center justify-center hover:scale-110 transition-transform"
                         >
                           <Plus className="w-3.5 h-3.5 text-white" />
@@ -284,6 +293,7 @@ export function CartDrawer({ open, onClose, onOrderPlaced }: CartDrawerProps) {
                   type="text"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
+                  aria-label="Your name, optional"
                   placeholder="Your name (optional)"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-gray-600 focus:border-cyan/40 focus:outline-none transition-colors"
                 />

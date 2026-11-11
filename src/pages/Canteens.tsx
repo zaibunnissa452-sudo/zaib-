@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, ArrowRight, Utensils, Loader2 } from "lucide-react";
+import { MapPin, ArrowRight, Utensils, Loader2, RotateCw } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import type { Canteen } from "../lib/types";
 import { canteenImageFor } from "../lib/menuImages";
@@ -13,13 +13,19 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
   const [canteens, setCanteens] = useState<Canteen[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
+    let active = true;
+
     async function load() {
+      setLoading(true);
+      setError(null);
       const { data, error } = await supabase
         .from("canteens")
         .select("*")
         .order("created_at");
+      if (!active) return;
       if (error) {
         setError(error.message);
       } else {
@@ -32,21 +38,37 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
       }
       setLoading(false);
     }
-    load();
-  }, []);
+    void load();
+
+    return () => {
+      active = false;
+    };
+  }, [reloadKey]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-16">
-        <Loader2 className="w-8 h-8 text-cyan animate-spin" />
+      <div className="min-h-screen flex flex-col items-center justify-center gap-3 pt-16" role="status">
+        <Loader2 className="w-8 h-8 text-cyan animate-spin" aria-hidden="true" />
+        <span className="text-sm text-gray-400">Loading campus canteens…</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-16 text-rose">
-        Failed to load canteens: {error}
+      <div className="min-h-screen flex items-center justify-center pt-16 px-4 relative z-10">
+        <div className="glass max-w-md p-6 text-center">
+          <h2 className="text-lg font-bold text-white">We couldn’t load the canteens</h2>
+          <p className="mt-2 text-sm text-gray-400">Check your connection and try again.</p>
+          <button
+            type="button"
+            onClick={() => setReloadKey((key) => key + 1)}
+            className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white/10 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+          >
+            <RotateCw className="h-4 w-4" aria-hidden="true" />
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
@@ -70,10 +92,18 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
           </p>
         </motion.div>
 
+        {canteens.length === 0 ? (
+          <div className="glass rounded-2xl px-6 py-12 text-center">
+            <Utensils className="mx-auto mb-4 h-10 w-10 text-gray-500" aria-hidden="true" />
+            <h3 className="text-lg font-bold text-white">No canteens available</h3>
+            <p className="mt-2 text-sm text-gray-400">Please check back a little later.</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           {canteens.map((canteen, i) => (
             <motion.button
               key={canteen.id}
+              type="button"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -82,7 +112,7 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
             >
               <div className="relative h-48 overflow-hidden rounded-t-[20px]">
                 <img
-                  src={canteen.image_url ?? ""}
+                  src={canteen.image_url ?? "/menu-images/samosa.jpg"}
                   alt={canteen.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
@@ -125,6 +155,7 @@ export function Canteens({ onSelectCanteen }: CanteensProps) {
             </motion.button>
           ))}
         </div>
+        )}
       </div>
     </div>
   );

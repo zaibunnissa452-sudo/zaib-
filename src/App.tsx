@@ -69,7 +69,11 @@ function AppContent() {
   return (
     <div className="min-h-screen relative">
       <Background />
-      <Nav active={tab} onNavigate={handleNavigate} onCartClick={() => setCartOpen(true)} />
+      <Nav
+        active={tab === "menu" ? "canteens" : tab}
+        onNavigate={handleNavigate}
+        onCartClick={() => setCartOpen(true)}
+      />
 
       <AnimatePresence mode="wait">
         <motion.div

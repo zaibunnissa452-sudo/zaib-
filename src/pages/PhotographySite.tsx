@@ -10,8 +10,6 @@ const stories = [
     type: "Weddings",
     image:
       "https://images.pexels.com/photos/8804917/pexels-photo-8804917.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Manik Mandal",
-    source: "https://www.pexels.com/photo/close-up-shot-of-a-wedding-couple-in-traditional-clothing-8804917/",
     className: "story-card story-card-tall",
   },
   {
@@ -20,8 +18,6 @@ const stories = [
     type: "Weddings",
     image:
       "https://images.pexels.com/photos/27865557/pexels-photo-27865557.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "serkan atay",
-    source: "https://www.pexels.com/photo/a-man-and-woman-are-sitting-at-a-wedding-altar-27865557/",
     className: "story-card",
   },
   {
@@ -30,8 +26,6 @@ const stories = [
     type: "Weddings",
     image:
       "https://images.pexels.com/photos/33328742/pexels-photo-33328742.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Fliqa India",
-    source: "https://www.pexels.com/photo/sacred-christian-wedding-ceremony-in-kerala-33328742/",
     className: "story-card",
   },
   {
@@ -40,8 +34,6 @@ const stories = [
     type: "Weddings",
     image:
       "https://images.pexels.com/photos/38273000/pexels-photo-38273000.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Photographer Gyanu",
-    source: "https://www.pexels.com/photo/traditional-hindu-wedding-ceremony-with-rituals-38273000/",
     className: "story-card",
   },
   {
@@ -50,8 +42,6 @@ const stories = [
     type: "Weddings",
     image:
       "https://images.pexels.com/photos/38781222/pexels-photo-38781222.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Uday Ahir on Pexels",
-    source: "https://www.pexels.com/photo/traditional-sikh-wedding-ceremony-in-gurdwara-38781222/",
     className: "story-card",
   },
   {
@@ -60,8 +50,6 @@ const stories = [
     type: "Weddings",
     image:
       "https://images.pexels.com/photos/20752380/pexels-photo-20752380.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Sabir Khan Shourov",
-    source: "https://www.pexels.com/photo/bride-and-groom-at-buddhist-wedding-in-temple-20752380/",
     className: "story-card",
   },
   {
@@ -70,8 +58,6 @@ const stories = [
     type: "Weddings",
     image:
       "https://images.pexels.com/photos/15978822/pexels-photo-15978822.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Following NYC",
-    source: "https://www.pexels.com/photo/a-beautiful-jewish-wedding-on-the-streets-of-central-park-a-celebration-of-love-and-tradition-15978822/",
     className: "story-card",
   },
   {
@@ -80,8 +66,6 @@ const stories = [
     type: "Birthdays",
     image:
       "https://images.pexels.com/photos/27176823/pexels-photo-27176823.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Helena Lopes",
-    source: "https://www.pexels.com/photo/friends-with-birthday-cake-27176823/",
     className: "story-card",
   },
   {
@@ -90,8 +74,6 @@ const stories = [
     type: "Press & media",
     image:
       "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=85",
-    credit: "Unsplash",
-    source: "https://unsplash.com/",
     className: "story-card",
   },
   {
@@ -100,8 +82,6 @@ const stories = [
     type: "Brand & corporate",
     image:
       "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85",
-    credit: "Unsplash",
-    source: "https://unsplash.com/",
     className: "story-card",
   },
   {
@@ -110,8 +90,6 @@ const stories = [
     type: "Celebrations",
     image:
       "https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    credit: "Priyanka Jagga",
-    source: "https://www.pexels.com/photo/women-dancing-together-at-party-16583021/",
     className: "story-card",
   },
 ];
@@ -128,8 +106,6 @@ const heroSlides = [
     image:
       "https://images.pexels.com/photos/8804917/pexels-photo-8804917.jpeg?auto=compress&cs=tinysrgb&w=1800",
     alt: "An Indian couple during their wedding ceremony",
-    credit: "Manik Mandal on Pexels",
-    source: "https://www.pexels.com/photo/close-up-shot-of-a-wedding-couple-in-traditional-clothing-8804917/",
   },
   {
     eyebrow: "BIRTHDAYS & FAMILY CELEBRATIONS",
@@ -140,8 +116,6 @@ const heroSlides = [
     image:
       "https://images.pexels.com/photos/27176823/pexels-photo-27176823.jpeg?auto=compress&cs=tinysrgb&w=1800",
     alt: "Friends celebrating a birthday with cake and sparklers",
-    credit: "Helena Lopes on Pexels",
-    source: "https://www.pexels.com/photo/friends-with-birthday-cake-27176823/",
   },
   {
     eyebrow: "PRESS & MEDIA",
@@ -152,8 +126,6 @@ const heroSlides = [
     image:
       "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1800&q=85",
     alt: "A speaker addressing an audience at an event",
-    credit: "Unsplash",
-    source: "https://unsplash.com/",
   },
   {
     eyebrow: "BRANDS & BUSINESS",
@@ -164,8 +136,6 @@ const heroSlides = [
     image:
       "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85",
     alt: "Colleagues collaborating around a table",
-    credit: "Unsplash",
-    source: "https://unsplash.com/",
   },
 ];
 
@@ -380,14 +350,9 @@ export function PhotographySite() {
             Tell us what you’re planning <span aria-hidden="true">↗</span>
           </a>
         </motion.div>
-        <a
-          className="photo-hero-note"
-          href={heroSlides[activeHero].source}
-          target="_blank"
-          rel="noreferrer"
-        >
-          SAMPLE IMAGE · PHOTO VIA {heroSlides[activeHero].credit.toUpperCase()} ↗
-        </a>
+        <p className="photo-hero-note">
+          REPRESENTATIVE EVENT IMAGE · NOT A CLIENT ASSIGNMENT
+        </p>
         <div className="photo-hero-controls" role="group" aria-label="Choose hero image">
           <button
             type="button"
@@ -484,15 +449,11 @@ export function PhotographySite() {
       <section className="photo-stories" id="stories">
         <Reveal className="photo-section-heading">
           <div>
-            <p className="photo-eyebrow">LICENSED STOCK IMAGE EXAMPLES</p>
+            <p className="photo-eyebrow">EVENT PHOTOGRAPHY</p>
             <h2>See the kinds of stories <em>we can capture.</em></h2>
           </div>
-          <p>Illustrative images across weddings, press, business, and celebrations—not Mohammed Saleemuddin’s client work.</p>
+          <p>Illustrative examples—not photographs from Style Studio client assignments.</p>
         </Reveal>
-        <p className="photo-stock-note">
-          Free-to-use stock imagery is credited to its source platform. These are
-          illustrative event examples, not assignments photographed by Style Studio.
-        </p>
         <div className="photo-story-filters" role="group" aria-label="Filter stock photo examples by event type">
           {storyFilters.map((filter) => (
             <button
@@ -523,14 +484,14 @@ export function PhotographySite() {
                     className="photo-story-button"
                     type="button"
                     onClick={() => setActiveStory(index)}
-                    aria-label={`View stock photo example: ${story.title}`}
+                    aria-label={`View event image example: ${story.title}`}
                   >
                     <img src={story.image} alt="" loading="lazy" />
                     <span className="photo-story-number">{String(index + 1).padStart(2, "0")}</span>
                     <span className="photo-story-caption">
                       <span>{story.category.toUpperCase()}</span>
                       <span className="photo-story-title">{story.title}</span>
-                      <span className="photo-story-open">Stock photo · View details ↗</span>
+                      <span className="photo-story-open">Illustrative image · View details ↗</span>
                     </span>
                   </button>
                 </motion.div>
@@ -547,14 +508,9 @@ export function PhotographySite() {
             alt="Illustrative stock image of a couple celebrating with family and friends"
             loading="lazy"
           />
-          <a
-            className="photo-approach-image-credit"
-            href="https://unsplash.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Illustrative stock image · Unsplash ↗
-          </a>
+          <span className="photo-approach-image-credit">
+            Illustrative image
+          </span>
         </Reveal>
         <Reveal className="photo-approach-copy" delay={0.12}>
           <p className="photo-eyebrow">OBSERVANT, PREPARED, PROFESSIONAL</p>
@@ -692,14 +648,9 @@ export function PhotographySite() {
                 <div>
                   <p>{stories[activeStory].category}</p>
                   <h2>{stories[activeStory].title}</h2>
-                  <a
-                    className="photo-lightbox-credit"
-                    href={stories[activeStory].source}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Photo via {stories[activeStory].credit} ↗
-                  </a>
+                  <p className="photo-lightbox-credit">
+                    Illustrative image · not a Style Studio client assignment
+                  </p>
                 </div>
                 <div className="photo-lightbox-controls">
                   <button

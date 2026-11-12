@@ -122,7 +122,8 @@ function AppContent() {
 }
 
 export default function App() {
-  if (window.location.pathname.replace(/\/+$/, "") === "/photography") {
+  const path = window.location.pathname.replace(/\/+$/, "");
+  if (path === "/photography" || path === "/photography.html") {
     return <PhotographySite />;
   }
 

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/photography",
+      "destination": "/photography.html"
+    }
+  ]
+}

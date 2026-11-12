@@ -142,7 +142,7 @@ const heroSlides = [
     heading: "Every tradition",
     emphasis: "deserves to be remembered.",
     description:
-      "Respectful photography for Hindu, Muslim, Christian, Sikh, Buddhist, Jewish, Jain, interfaith, and other wedding traditions.",
+      "Photography and videography for Hindu, Muslim, Christian, Sikh, Buddhist, Jewish, Jain, interfaith, and other wedding traditions.",
     image:
       "https://images.pexels.com/photos/8804917/pexels-photo-8804917.jpeg?auto=compress&cs=tinysrgb&w=1800",
     alt: "An Indian couple during their wedding ceremony",
@@ -152,7 +152,7 @@ const heroSlides = [
     heading: "Good people.",
     emphasis: "A day worth keeping.",
     description:
-      "Warm, natural coverage for birthdays, anniversaries, family gatherings, and community celebrations.",
+      "Photography and videography for birthdays and family celebrations.",
     image:
       "https://images.pexels.com/photos/27176823/pexels-photo-27176823.jpeg?auto=compress&cs=tinysrgb&w=1800",
     alt: "Friends celebrating a birthday with cake and sparklers",
@@ -162,7 +162,7 @@ const heroSlides = [
     heading: "The moments",
     emphasis: "the city needs to see.",
     description:
-      "Considered coverage for press conferences, interviews, public announcements, and media assignments.",
+      "Photography-only coverage for press conferences, interviews, public announcements, and media assignments.",
     image:
       "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1800&q=85",
     alt: "A speaker addressing an audience at an event",
@@ -386,6 +386,9 @@ export function PhotographySite() {
               <p className="photo-hero-description">{heroSlides[activeHero].description}</p>
             </motion.div>
           </AnimatePresence>
+          <p className="photo-hero-service-scope">
+            Photography + videography for weddings and birthdays only · Photography only for press events
+          </p>
           <a className="photo-button photo-button-light" href="#contact">
             Tell us what you’re planning <span aria-hidden="true">↗</span>
           </a>

@@ -45,23 +45,29 @@
   display: inline-flex;
   flex-wrap: wrap;
   align-items: baseline;
-  column-gap: 5px;
-  font-size: 15px;
+  column-gap: 6px;
+  font-size: 19px;
   font-weight: 600;
-  letter-spacing: 0.19em;
+  letter-spacing: 0.17em;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.photo-brand:hover {
+  color: #a97852;
+  transform: translateY(-1px);
 }
 
 .photo-brand span {
   color: #a97852;
   font-family: Georgia, serif;
-  font-size: 16px;
+  font-size: 21px;
   font-style: italic;
   font-weight: 700;
 }
 
 .photo-brand small {
   flex-basis: 100%;
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 500;
   letter-spacing: 0.16em;
   margin-top: 3px;
@@ -107,7 +113,7 @@
   display: flex;
   min-height: min(760px, calc(100svh - 82px));
   overflow: hidden;
-  padding: 90px 12%;
+  padding: 90px 12% 130px;
   position: relative;
 }
 
@@ -142,14 +148,21 @@
   min-height: 225px;
 }
 
-.photo-hero-controls {
+.photo-hero-bottom {
   align-items: center;
   bottom: 30px;
   display: flex;
-  gap: 14px;
+  justify-content: space-between;
   left: 7.2%;
   position: absolute;
+  right: 7.2%;
   z-index: 2;
+}
+
+.photo-hero-controls {
+  align-items: center;
+  display: flex;
+  gap: 14px;
 }
 
 .photo-hero-controls > button {
@@ -207,6 +220,63 @@
 
 .photo-hero .photo-eyebrow {
   color: #e4c6a9;
+  margin: 0 0 14px;
+}
+
+.photo-service-options {
+  display: grid;
+  gap: 9px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 0 18px;
+  max-width: 580px;
+}
+
+.photo-service-option {
+  background: rgba(31, 28, 24, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 7px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: center;
+  min-height: 62px;
+  min-width: 0;
+  padding: 10px 12px;
+  text-align: left;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.photo-service-option:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: white;
+}
+
+.photo-service-option[aria-pressed="true"] {
+  background: var(--photo-paper);
+  border-color: var(--photo-paper);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  color: var(--photo-ink);
+}
+
+.photo-service-option:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+
+.photo-service-option span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.photo-service-option strong {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
 }
 
 .photo-hero h1 {
@@ -232,16 +302,6 @@
   line-height: 1.9;
   margin: 0 0 32px;
   max-width: 420px;
-}
-
-.photo-hero-service-scope {
-  border-left: 1px solid rgba(255, 255, 255, 0.55);
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 11px;
-  line-height: 1.7;
-  margin: -17px 0 23px;
-  max-width: 480px;
-  padding-left: 12px;
 }
 
 .photo-button {
@@ -279,14 +339,13 @@
 }
 
 .photo-hero-note {
-  bottom: 32px;
   color: rgba(255, 255, 255, 0.76);
   font-size: 8px;
   letter-spacing: 0.19em;
-  position: absolute;
-  right: 7.2%;
+  margin: 0;
+  max-width: 48%;
   text-decoration: none;
-  z-index: 1;
+  text-align: right;
 }
 
 .photo-hero-note:hover {
@@ -1017,7 +1076,7 @@
   .photo-hero {
     min-height: 680px;
     min-height: min(760px, calc(100svh - 70px));
-    padding: 70px 8%;
+    padding: 70px 8% 132px;
   }
 
   .photo-hero-image {
@@ -1030,25 +1089,48 @@
   }
 
   .photo-hero h1 {
-    font-size: clamp(53px, 12vw, 82px);
+    font-size: clamp(43px, 11vw, 72px);
   }
 
   .photo-hero-message {
     min-height: 235px;
   }
 
-  .photo-hero-note {
-    bottom: 28px;
-    font-size: 7px;
-    left: auto;
-    max-width: 45%;
+  .photo-service-options {
+    gap: 6px;
+  }
+
+  .photo-service-option {
+    min-height: 60px;
+    padding: 8px;
+  }
+
+  .photo-service-option span {
+    font-size: 8px;
+    letter-spacing: 0.06em;
+  }
+
+  .photo-service-option strong {
+    font-size: 9px;
+  }
+
+  .photo-hero-bottom {
+    align-items: flex-start;
+    bottom: 18px;
+    flex-direction: column-reverse;
+    gap: 8px;
+    left: 6%;
     right: 6%;
-    text-align: right;
+  }
+
+  .photo-hero-note {
+    font-size: 7px;
+    max-width: 100%;
+    text-align: left;
   }
 
   .photo-hero-controls {
-    bottom: 21px;
-    left: 6%;
+    gap: 10px;
   }
 
   .photo-scroll {
@@ -1220,7 +1302,9 @@
 
   .photo-story-button img,
   .photo-story-open,
+  .photo-brand,
   .photo-menu-icon i,
+  .photo-service-option,
   .photo-nav nav {
     transition: none;
   }

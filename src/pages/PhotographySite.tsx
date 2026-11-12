@@ -179,6 +179,12 @@ const heroSlides = [
   },
 ];
 
+const heroServices = [
+  { label: "Weddings", coverage: "Photography + video", slide: 0 },
+  { label: "Birthdays", coverage: "Photography + video", slide: 1 },
+  { label: "Press events", coverage: "Photography only", slide: 2 },
+] as const;
+
 const eventTypes = [
   "Wedding (all faiths & traditions)",
   "Birthday / family celebration",
@@ -373,6 +379,23 @@ export function PhotographySite() {
           >
             {heroSlides[activeHero].eyebrow} · HYDERABAD
           </motion.p>
+          <div className="photo-service-options" role="group" aria-label="Photography and videography services">
+            {heroServices.map((service) => (
+              <motion.button
+                className="photo-service-option"
+                key={service.label}
+                type="button"
+                aria-label={`${service.label}: ${service.coverage}`}
+                aria-pressed={activeHero === service.slide}
+                onClick={() => setActiveHero(service.slide)}
+                whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
+              >
+                <span>{service.label}</span>
+                <strong>{service.coverage}</strong>
+              </motion.button>
+            ))}
+          </div>
           <AnimatePresence mode="wait">
             <motion.div
               className="photo-hero-message"
@@ -386,51 +409,50 @@ export function PhotographySite() {
               <p className="photo-hero-description">{heroSlides[activeHero].description}</p>
             </motion.div>
           </AnimatePresence>
-          <p className="photo-hero-service-scope">
-            Photography + videography for weddings and birthdays only · Photography only for press events
-          </p>
           <a className="photo-button photo-button-light" href="#contact">
             Tell us what you’re planning <span aria-hidden="true">↗</span>
           </a>
         </motion.div>
-        <p className="photo-hero-note">
-          REPRESENTATIVE EVENT IMAGE · NOT A CLIENT ASSIGNMENT
-        </p>
-        <div className="photo-hero-controls" role="group" aria-label="Choose hero image">
-          <button
-            type="button"
-            aria-label="Previous event category"
-            onClick={() => setActiveHero((activeHero - 1 + heroSlides.length) % heroSlides.length)}
-          >
-            ←
-          </button>
-          <div className="photo-hero-dots">
-            {heroSlides.map((slide, index) => (
-              <button
-                type="button"
-                key={slide.eyebrow}
-                className={index === activeHero ? "is-active" : ""}
-                aria-label={`Show ${slide.eyebrow.toLowerCase()} image`}
-                aria-pressed={index === activeHero}
-                onClick={() => setActiveHero(index)}
-              />
-            ))}
+        <div className="photo-hero-bottom">
+          <p className="photo-hero-note">
+            REPRESENTATIVE EVENT IMAGE · NOT A CLIENT ASSIGNMENT
+          </p>
+          <div className="photo-hero-controls" role="group" aria-label="Choose hero image">
+            <button
+              type="button"
+              aria-label="Previous event category"
+              onClick={() => setActiveHero((activeHero - 1 + heroSlides.length) % heroSlides.length)}
+            >
+              ←
+            </button>
+            <div className="photo-hero-dots">
+              {heroSlides.map((slide, index) => (
+                <button
+                  type="button"
+                  key={slide.eyebrow}
+                  className={index === activeHero ? "is-active" : ""}
+                  aria-label={`Show ${slide.eyebrow.toLowerCase()} image`}
+                  aria-pressed={index === activeHero}
+                  onClick={() => setActiveHero(index)}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              aria-label="Next event category"
+              onClick={() => setActiveHero((activeHero + 1) % heroSlides.length)}
+            >
+              →
+            </button>
+            <button
+              type="button"
+              aria-label={heroPaused ? "Resume automatic event categories" : "Pause automatic event categories"}
+              aria-pressed={heroPaused}
+              onClick={() => setHeroPaused((paused) => !paused)}
+            >
+              <span aria-hidden="true">{heroPaused ? "▶" : "Ⅱ"}</span>
+            </button>
           </div>
-          <button
-            type="button"
-            aria-label="Next event category"
-            onClick={() => setActiveHero((activeHero + 1) % heroSlides.length)}
-          >
-            →
-          </button>
-          <button
-            type="button"
-            aria-label={heroPaused ? "Resume automatic event categories" : "Pause automatic event categories"}
-            aria-pressed={heroPaused}
-            onClick={() => setHeroPaused((paused) => !paused)}
-          >
-            <span aria-hidden="true">{heroPaused ? "▶" : "Ⅱ"}</span>
-          </button>
         </div>
         <a className="photo-scroll" href="#event-services" aria-label="Scroll to event services">
           <span />

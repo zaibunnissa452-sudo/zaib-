@@ -132,6 +132,38 @@ const stories: Array<{
       "https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1200",
     className: "story-card",
   },
+  {
+    title: "An evening under the lights",
+    category: "Outdoor celebration setup",
+    type: "Celebrations",
+    image: "/images/photography/outdoor-celebration-setup.png",
+    isClientWork: true,
+    className: "story-card",
+  },
+  {
+    title: "Style on display",
+    category: "Fashion exhibition",
+    type: "Brand & corporate",
+    image: "/images/photography/fashion-exhibition-group.png",
+    isClientWork: true,
+    className: "story-card",
+  },
+  {
+    title: "A style statement",
+    category: "Fashion exhibition portrait",
+    type: "Brand & corporate",
+    image: "/images/photography/fashion-exhibition-model.png",
+    isClientWork: true,
+    className: "story-card story-card-client-portrait",
+  },
+  {
+    title: "Together at the exhibition",
+    category: "Fashion exhibition",
+    type: "Brand & corporate",
+    image: "/images/photography/fashion-exhibition-selfie.png",
+    isClientWork: true,
+    className: "story-card",
+  },
 ];
 
 const storyFilters = ["All examples", "Weddings", "Birthdays", "Press & media", "Brand & corporate", "Celebrations"];

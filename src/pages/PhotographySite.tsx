@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import "./photography.css";
-import { PhotographyAssistant } from "./PhotographyAssistant";
+import { PhotographyAssistant, whatsappUrl } from "./PhotographyAssistant";
 
 const stories = [
   {
@@ -70,11 +70,11 @@ const storyFilters = ["All examples", "Weddings", "Press & media", "Brand & corp
 
 const heroSlides = [
   {
-    eyebrow: "WEDDINGS & CULTURAL CELEBRATIONS",
+    eyebrow: "WEDDINGS ACROSS ALL FAITHS & TRADITIONS",
     heading: "Every tradition",
     emphasis: "deserves to be remembered.",
     description:
-      "Thoughtful, inclusive photography for couples and families celebrating in their own way.",
+      "Respectful photography for Hindu, Muslim, Christian, Sikh, interfaith, and other wedding traditions.",
     image:
       "https://images.pexels.com/photos/8804917/pexels-photo-8804917.jpeg?auto=compress&cs=tinysrgb&w=1800",
     alt: "An Indian couple during their wedding ceremony",
@@ -106,21 +106,23 @@ const heroSlides = [
     source: "https://unsplash.com/",
   },
   {
-    eyebrow: "PEOPLE & CELEBRATIONS",
+    eyebrow: "BIRTHDAYS & FAMILY CELEBRATIONS",
     heading: "Good people.",
     emphasis: "A day worth keeping.",
     description:
-      "Warm, natural photographs of community events, family gatherings, and shared celebrations.",
+      "Warm, natural coverage for birthdays, anniversaries, family gatherings, and community celebrations.",
     image:
       "https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1800",
-    alt: "Guests enjoying an Indian wedding celebration together",
+    alt: "Guests dancing together at a celebration",
     credit: "Priyanka Jagga on Pexels",
     source: "https://www.pexels.com/photo/women-dancing-together-at-party-16583021/",
   },
 ];
 
 const eventTypes = [
-  "Wedding / family / cultural celebration",
+  "Wedding (all faiths & traditions)",
+  "Birthday / family celebration",
+  "Cultural / community event",
   "Press / media assignment",
   "Brand / corporate event",
   "Product launch / promotion",
@@ -130,26 +132,35 @@ const eventTypes = [
 const eventServices = [
   {
     number: "01",
+    title: "Weddings across all faiths",
+    eventType: "Wedding (all faiths & traditions)",
+    description:
+      "Respectful coverage for Hindu, Muslim, Christian, Sikh, interfaith, and other faith and cultural traditions.",
+  },
+  {
+    number: "02",
+    title: "Birthdays & family milestones",
+    eventType: "Birthday / family celebration",
+    description:
+      "Birthdays, anniversaries, family gatherings, and the milestones you want to remember.",
+  },
+  {
+    number: "03",
     title: "Press & media",
+    eventType: "Press / media assignment",
     description:
       "Press conferences, media briefings, interviews, public announcements, and official gatherings.",
   },
   {
-    number: "02",
+    number: "04",
     title: "Brands & business",
+    eventType: "Brand / corporate event",
     description:
       "Product launches, corporate events, promotional campaigns, and business milestones.",
-  },
-  {
-    number: "03",
-    title: "People & celebrations",
-    description:
-      "Weddings, family occasions, cultural programmes, performances, and community events.",
   },
 ];
 
 export function PhotographySite() {
-  const [submitted, setSubmitted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeStory, setActiveStory] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState("All examples");
@@ -206,7 +217,25 @@ export function PhotographySite() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    const formData = new FormData(event.currentTarget);
+    const name = String(formData.get("name") ?? "").trim();
+    const eventType = String(formData.get("eventType") ?? "").trim();
+    const contact = String(formData.get("contact") ?? "").trim();
+    const date = String(formData.get("date") ?? "").trim();
+    const details = String(formData.get("details") ?? "").trim();
+    const message = [
+      "Hello Saleem, I’d like to enquire about photography.",
+      "",
+      `Name: ${name}`,
+      `Event: ${eventType}`,
+      `Contact: ${contact}`,
+      date ? `Event date: ${date}` : "",
+      details ? `Details: ${details}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    window.location.assign(whatsappUrl(message));
   }
 
   function closeMenu() {
@@ -358,9 +387,9 @@ export function PhotographySite() {
           <em>moments worth keeping.</em>
         </h2>
         <p>
-          Style Studio photographs weddings, cultural celebrations, business
-          events, and press assignments with care, discretion, and attention to
-          the moments that matter.
+          Style Studio photographs weddings across faiths, birthdays and family
+          milestones, cultural celebrations, business events, and press
+          assignments with care and attention to the moments that matter.
         </p>
       </Reveal>
 
@@ -370,7 +399,7 @@ export function PhotographySite() {
             <p className="photo-eyebrow">MORE THAN WEDDINGS</p>
             <h2>One studio. <em>Every kind of event.</em></h2>
           </div>
-          <p>Professional photography for Hyderabad’s people, organisations, and brands.</p>
+          <p>Professional photography for Hyderabad’s couples, families, organisations, and brands.</p>
         </Reveal>
         <div className="photo-event-grid">
           {eventServices.map((service, index) => (
@@ -382,9 +411,7 @@ export function PhotographySite() {
                 href="#contact"
                 aria-label={`Enquire about ${service.title}`}
                 onClick={() => {
-                  if (service.title === "Press & media") setSelectedEventType("Press / media assignment");
-                  else if (service.title === "Brands & business") setSelectedEventType("Brand / corporate event");
-                  else setSelectedEventType("Wedding / family / cultural celebration");
+                  setSelectedEventType(service.eventType);
                 }}
               >
                 Enquire about this service <span aria-hidden="true">↗</span>
@@ -496,11 +523,11 @@ export function PhotographySite() {
 
       <section className="photo-contact" id="contact">
         <Reveal className="photo-contact-heading">
-          <p className="photo-eyebrow">WEDDINGS · PRESS · BUSINESS · EVENTS</p>
+          <p className="photo-eyebrow">WEDDINGS · BIRTHDAYS · PRESS · BUSINESS · EVENTS</p>
           <h2>What are you<br />bringing people <em>together for?</em></h2>
           <p>
-            Share a few details about your wedding, press assignment, launch,
-            or event and Mohammed Saleemuddin will follow up.
+            Share a few details about your wedding, birthday, press assignment,
+            launch, or event and Mohammed Saleemuddin will follow up.
           </p>
           <a className="photo-contact-phone" href="tel:+919885037928">
             Call Mohammed Saleemuddin <span>+91 98850 37928</span>
@@ -549,16 +576,12 @@ export function PhotographySite() {
               rows={3}
             />
           </label>
+          <p className="photo-form-note">
+            WhatsApp will open with your enquiry ready to review and send to Saleem.
+          </p>
           <button className="photo-button" type="submit">
-            Send an enquiry <span aria-hidden="true">↗</span>
+            Continue on WhatsApp <span aria-hidden="true">↗</span>
           </button>
-          {submitted && (
-            <p className="photo-form-notice" role="status">
-              Thanks for sharing your plans. This enquiry form is a preview and
-              needs the photographer’s email or WhatsApp connected before it
-              can deliver messages.
-            </p>
-          )}
         </form>
         </Reveal>
       </section>
@@ -568,7 +591,7 @@ export function PhotographySite() {
           STYLE <span>STUDIO</span>
           <small>BY MOHAMMED SALEEMUDDIN</small>
         </a>
-        <p>Photography · Weddings, press & events · Hyderabad</p>
+        <p>Photography · Weddings, birthdays, press & events · Hyderabad</p>
         <a href="#home">Back to top ↑</a>
       </footer>
       <PhotographyAssistant />

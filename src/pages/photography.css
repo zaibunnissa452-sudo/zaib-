@@ -351,7 +351,7 @@
 .photo-event-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 0 auto;
   max-width: 1300px;
 }
@@ -743,7 +743,8 @@
 }
 
 .photo-inquiry-form input,
-.photo-inquiry-form textarea {
+.photo-inquiry-form textarea,
+.photo-inquiry-form select {
   background: transparent !important;
   border: 0 !important;
   border-bottom: 1px solid rgba(37, 37, 31, 0.25) !important;
@@ -759,7 +760,8 @@
 }
 
 .photo-inquiry-form input:focus,
-.photo-inquiry-form textarea:focus {
+.photo-inquiry-form textarea:focus,
+.photo-inquiry-form select:focus {
   border-color: #a97852 !important;
 }
 
@@ -778,7 +780,7 @@
   margin-top: 2px;
 }
 
-.photo-form-notice {
+.photo-form-note {
   color: #6a594a;
   font-size: 11px;
   line-height: 1.7;
@@ -896,6 +898,12 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 9px;
   letter-spacing: 0.1em;
+}
+
+@media (max-width: 1020px) {
+  .photo-event-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {

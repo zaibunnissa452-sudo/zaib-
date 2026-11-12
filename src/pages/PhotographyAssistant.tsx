@@ -8,7 +8,7 @@ type ChatMessage = {
   text: string;
 };
 
-const whatsappUrl = (message: string) =>
+export const whatsappUrl = (message: string) =>
   `https://wa.me/919885037928?text=${encodeURIComponent(message)}`;
 
 function getAnswer(question: string) {
@@ -26,8 +26,11 @@ function getAnswer(question: string) {
   if (/press|media|conference|launch|brand|corporate|promotion|promotional|business|product/.test(query)) {
     return "Yes. Style Studio covers press conferences, media briefings, interviews, product and brand launches, corporate events, and promotional assignments in Hyderabad. Saleem is a Press Club member and holds press accreditation; event access should be confirmed with the organiser.";
   }
-  if (/wedding|marriage|ceremony|engagement|reception|event|celebration/.test(query)) {
-    return "Style Studio photographs weddings and ceremonies for clients of every background, as well as press, corporate, promotional, and cultural events. Share what you’re planning so Saleem can discuss the coverage with you.";
+  if (/wedding|marriage|ceremony|engagement|reception/.test(query)) {
+    return "Style Studio welcomes weddings across all faiths and traditions, including Hindu, Muslim, Christian, Sikh, interfaith, and other ceremonies. Share what you’re planning so Saleem can discuss the coverage with you.";
+  }
+  if (/birthday|party|anniversary|family|celebration|event/.test(query)) {
+    return "Style Studio covers birthdays, anniversaries, family gatherings, cultural celebrations, press assignments, corporate events, and launches. Share what you’re planning so Saleem can discuss the coverage with you.";
   }
   if (/contact|call|phone|whatsapp|talk|person/.test(query)) {
     return "You can call or WhatsApp Saleem at +91 98850 37928.";
@@ -43,7 +46,7 @@ export function PhotographyAssistant() {
     {
       id: 0,
       from: "studio",
-      text: "Hello! I’m Style Studio’s quick guide. Ask about weddings, press coverage, brand events, Hyderabad service, pricing, or checking a date.",
+      text: "Hello! I’m Style Studio’s quick guide. Ask about weddings across faiths, birthdays, press coverage, brand events, Hyderabad service, pricing, or checking a date.",
     },
   ]);
   const messageEndRef = useRef<HTMLDivElement>(null);
@@ -115,7 +118,7 @@ export function PhotographyAssistant() {
             </div>
 
             <div className="photo-chat-suggestions" aria-label="Suggested questions">
-              {["Do you cover press events?", "Do you cover Hyderabad?", "How do I check a date?"].map(
+              {["Do you cover birthdays?", "Do you cover press events?", "How do I check a date?"].map(
                 (question) => (
                   <button
                     type="button"

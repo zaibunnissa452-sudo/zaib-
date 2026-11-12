@@ -35,6 +35,56 @@ const stories = [
     className: "story-card",
   },
   {
+    title: "Rituals filled with color",
+    category: "Hindu wedding ceremony",
+    type: "Weddings",
+    image:
+      "https://images.pexels.com/photos/38273000/pexels-photo-38273000.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Photographer Gyanu",
+    source: "https://www.pexels.com/photo/traditional-hindu-wedding-ceremony-with-rituals-38273000/",
+    className: "story-card",
+  },
+  {
+    title: "A promise in the Gurdwara",
+    category: "Sikh wedding ceremony",
+    type: "Weddings",
+    image:
+      "https://images.pexels.com/photos/38781222/pexels-photo-38781222.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Uday Ahir on Pexels",
+    source: "https://www.pexels.com/photo/traditional-sikh-wedding-ceremony-in-gurdwara-38781222/",
+    className: "story-card",
+  },
+  {
+    title: "A sacred vow, shared together",
+    category: "Buddhist wedding ceremony",
+    type: "Weddings",
+    image:
+      "https://images.pexels.com/photos/20752380/pexels-photo-20752380.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Sabir Khan Shourov",
+    source: "https://www.pexels.com/photo/bride-and-groom-at-buddhist-wedding-in-temple-20752380/",
+    className: "story-card",
+  },
+  {
+    title: "A joyful wedding in the city",
+    category: "Jewish wedding celebration",
+    type: "Weddings",
+    image:
+      "https://images.pexels.com/photos/15978822/pexels-photo-15978822.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Following NYC",
+    source: "https://www.pexels.com/photo/a-beautiful-jewish-wedding-on-the-streets-of-central-park-a-celebration-of-love-and-tradition-15978822/",
+    className: "story-card",
+  },
+  {
+    title: "A birthday with friends",
+    category: "Birthday celebration",
+    type: "Birthdays",
+    image:
+      "https://images.pexels.com/photos/27176823/pexels-photo-27176823.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Helena Lopes",
+    source: "https://www.pexels.com/photo/friends-with-birthday-cake-27176823/",
+    className: "story-card",
+  },
+  {
     title: "In the room where news breaks",
     category: "Press & media",
     type: "Press & media",
@@ -66,7 +116,7 @@ const stories = [
   },
 ];
 
-const storyFilters = ["All examples", "Weddings", "Press & media", "Brand & corporate", "Celebrations"];
+const storyFilters = ["All examples", "Weddings", "Birthdays", "Press & media", "Brand & corporate", "Celebrations"];
 
 const heroSlides = [
   {
@@ -74,12 +124,24 @@ const heroSlides = [
     heading: "Every tradition",
     emphasis: "deserves to be remembered.",
     description:
-      "Respectful photography for Hindu, Muslim, Christian, Sikh, interfaith, and other wedding traditions.",
+      "Respectful photography for Hindu, Muslim, Christian, Sikh, Buddhist, Jewish, Jain, interfaith, and other wedding traditions.",
     image:
       "https://images.pexels.com/photos/8804917/pexels-photo-8804917.jpeg?auto=compress&cs=tinysrgb&w=1800",
     alt: "An Indian couple during their wedding ceremony",
     credit: "Manik Mandal on Pexels",
     source: "https://www.pexels.com/photo/close-up-shot-of-a-wedding-couple-in-traditional-clothing-8804917/",
+  },
+  {
+    eyebrow: "BIRTHDAYS & FAMILY CELEBRATIONS",
+    heading: "Good people.",
+    emphasis: "A day worth keeping.",
+    description:
+      "Warm, natural coverage for birthdays, anniversaries, family gatherings, and community celebrations.",
+    image:
+      "https://images.pexels.com/photos/27176823/pexels-photo-27176823.jpeg?auto=compress&cs=tinysrgb&w=1800",
+    alt: "Friends celebrating a birthday with cake and sparklers",
+    credit: "Helena Lopes on Pexels",
+    source: "https://www.pexels.com/photo/friends-with-birthday-cake-27176823/",
   },
   {
     eyebrow: "PRESS & MEDIA",
@@ -105,18 +167,6 @@ const heroSlides = [
     credit: "Unsplash",
     source: "https://unsplash.com/",
   },
-  {
-    eyebrow: "BIRTHDAYS & FAMILY CELEBRATIONS",
-    heading: "Good people.",
-    emphasis: "A day worth keeping.",
-    description:
-      "Warm, natural coverage for birthdays, anniversaries, family gatherings, and community celebrations.",
-    image:
-      "https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1800",
-    alt: "Guests dancing together at a celebration",
-    credit: "Priyanka Jagga on Pexels",
-    source: "https://www.pexels.com/photo/women-dancing-together-at-party-16583021/",
-  },
 ];
 
 const eventTypes = [
@@ -135,7 +185,7 @@ const eventServices = [
     title: "Weddings across all faiths",
     eventType: "Wedding (all faiths & traditions)",
     description:
-      "Respectful coverage for Hindu, Muslim, Christian, Sikh, interfaith, and other faith and cultural traditions.",
+      "Respectful coverage for Hindu, Muslim, Christian, Sikh, Buddhist, Jewish, Jain, interfaith, and other faith and cultural traditions.",
   },
   {
     number: "02",
@@ -476,7 +526,7 @@ export function PhotographySite() {
                     aria-label={`View stock photo example: ${story.title}`}
                   >
                     <img src={story.image} alt="" loading="lazy" />
-                    <span className="photo-story-number">0{index + 1}</span>
+                    <span className="photo-story-number">{String(index + 1).padStart(2, "0")}</span>
                     <span className="photo-story-caption">
                       <span>{story.category.toUpperCase()}</span>
                       <span className="photo-story-title">{story.title}</span>
@@ -661,7 +711,9 @@ export function PhotographySite() {
                   >
                     ←
                   </button>
-                  <span>0{activeStory + 1} / 0{stories.length}</span>
+                  <span>
+                    {String(activeStory + 1).padStart(2, "0")} / {String(stories.length).padStart(2, "0")}
+                  </span>
                   <button
                     type="button"
                     aria-label="Next story"

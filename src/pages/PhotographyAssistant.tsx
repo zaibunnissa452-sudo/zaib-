@@ -27,7 +27,7 @@ function getAnswer(question: string) {
     return "Yes. Style Studio covers press conferences, media briefings, interviews, product and brand launches, corporate events, and promotional assignments in Hyderabad. Saleem is a Press Club member and holds press accreditation; event access should be confirmed with the organiser.";
   }
   if (/wedding|marriage|ceremony|engagement|reception/.test(query)) {
-    return "Style Studio welcomes weddings across all faiths and traditions, including Hindu, Muslim, Christian, Sikh, interfaith, and other ceremonies. Share what you’re planning so Saleem can discuss the coverage with you.";
+    return "Style Studio welcomes weddings across all faiths and traditions, including Hindu, Muslim, Christian, Sikh, Buddhist, Jewish, Jain, interfaith, and other ceremonies. Share what you’re planning so Saleem can discuss the coverage with you.";
   }
   if (/birthday|party|anniversary|family|celebration|event/.test(query)) {
     return "Style Studio covers birthdays, anniversaries, family gatherings, cultural celebrations, press assignments, corporate events, and launches. Share what you’re planning so Saleem can discuss the coverage with you.";

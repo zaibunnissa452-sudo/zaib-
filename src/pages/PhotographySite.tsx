@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { ElectricLogo } from "../components/ElectricLogo";
 import "./photography.css";
 import { PhotographyAssistant, whatsappUrl } from "./PhotographyAssistant";
 
@@ -353,6 +354,14 @@ export function PhotographySite() {
             src="/images/photography/style-studio-logo.png"
             alt="Style Studio Photography — Capture, Cherish, Forever"
           />
+          <span className="photo-brand-electric" aria-hidden="true">
+            <ElectricLogo
+              src="/images/photography/style-studio-logo.png"
+              color="#f0c66a"
+              glowColor="#e9b957"
+              sparkColor="#fff2c6"
+            />
+          </span>
         </a>
         <button
           className="photo-menu-toggle"

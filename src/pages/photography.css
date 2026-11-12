@@ -1347,44 +1347,34 @@
   position: relative;
 }
 
-.photo-brand::before,
-.photo-brand::after {
-  border-radius: inherit;
-  content: "";
-  inset: -3px;
-  pointer-events: none;
-  position: absolute;
-}
-
-.photo-brand::before {
-  animation: photo-electric-sweep 4.4s ease-in-out infinite;
-  opacity: 0.68;
-  background: linear-gradient(
-    112deg,
-    transparent 42%,
-    rgba(255, 246, 213, 0.12) 47%,
-    rgba(255, 255, 255, 0.52) 49%,
-    rgba(246, 197, 95, 0.34) 50%,
-    transparent 54%
-  );
-  mix-blend-mode: screen;
-  z-index: 2;
-}
-
-.photo-brand::after {
-  animation: photo-electric-sparks 2.8s steps(1, end) infinite;
-  background:
-    radial-gradient(circle at 6% 14%, #fff8d8 0 1px, transparent 2px),
-    radial-gradient(circle at 94% 76%, #f5c96f 0 1px, transparent 2px),
-    radial-gradient(circle at 83% 8%, #fff 0 1px, transparent 2px);
-  box-shadow: 0 0 12px rgba(229, 187, 105, 0.42);
-  opacity: 0.5;
-  z-index: 3;
-}
-
 .photo-brand img {
   position: relative;
   z-index: 1;
+}
+
+.photo-brand-electric {
+  inset: 3px;
+  pointer-events: auto;
+  position: absolute;
+  z-index: 2;
+}
+
+.photo-brand-electric .electric-logo-mark {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.photo-brand-electric .electric-logo-canvas {
+  filter:
+    drop-shadow(0 0 2px rgba(240, 198, 106, 0.9))
+    drop-shadow(0 0 8px rgba(233, 185, 87, 0.56));
+}
+
+.photo-brand-electric .electric-logo-mark:hover .electric-logo-canvas {
+  filter:
+    drop-shadow(0 0 3px rgba(255, 242, 198, 0.95))
+    drop-shadow(0 0 11px rgba(233, 185, 87, 0.78));
 }
 
 .photo-brand:hover {
@@ -1566,39 +1556,4 @@
 .photo-menu-toggle:focus-visible {
   outline: 2px solid #f0d293;
   outline-offset: 3px;
-}
-
-@keyframes photo-electric-sweep {
-  0%,
-  16% {
-    transform: translateX(-115%) skewX(-24deg);
-  }
-  62%,
-  100% {
-    transform: translateX(115%) skewX(-24deg);
-  }
-}
-
-@keyframes photo-electric-sparks {
-  0%,
-  22%,
-  26%,
-  64%,
-  100% {
-    opacity: 0.16;
-  }
-  24%,
-  70% {
-    opacity: 0.92;
-  }
-  72% {
-    opacity: 0.35;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .photo-brand::before,
-  .photo-brand::after {
-    animation: none;
-  }
 }

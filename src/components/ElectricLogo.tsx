@@ -2,6 +2,9 @@ import { useEffect, useRef } from "react";
 
 interface ElectricLogoProps {
   src: string;
+  color?: string;
+  glowColor?: string;
+  sparkColor?: string;
 }
 
 interface EdgeSegment {
@@ -69,7 +72,12 @@ function findOuterEdge(imageData: ImageData): EdgeSegment[] {
   return edges;
 }
 
-export function ElectricLogo({ src }: ElectricLogoProps) {
+export function ElectricLogo({
+  src,
+  color = "#00e5ff",
+  glowColor = color,
+  sparkColor = "#bdf9ff",
+}: ElectricLogoProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hoverRef = useRef(false);
 
@@ -99,11 +107,13 @@ export function ElectricLogo({ src }: ElectricLogoProps) {
       }
       context.lineCap = "round";
       context.lineJoin = "round";
-      context.strokeStyle = hovered ? "rgba(0, 229, 255, 0.9)" : "rgba(0, 229, 255, 0.65)";
+      context.strokeStyle = color;
+      context.globalAlpha = hovered ? 0.9 : 0.65;
       context.lineWidth = hovered ? 2 : 1.4;
-      context.shadowColor = "#00e5ff";
+      context.shadowColor = glowColor;
       context.shadowBlur = hovered ? 16 : 10;
       context.stroke();
+      context.globalAlpha = 1;
 
       if (!reducedMotion) {
         const sparkCount = hovered ? 14 : 7;
@@ -135,7 +145,7 @@ export function ElectricLogo({ src }: ElectricLogoProps) {
           }
         }
 
-        context.strokeStyle = "#bdf9ff";
+        context.strokeStyle = sparkColor;
         context.lineWidth = hovered ? 1.8 : 1.2;
         context.shadowBlur = 12;
         context.stroke();
@@ -174,7 +184,7 @@ export function ElectricLogo({ src }: ElectricLogoProps) {
 
     image.onerror = () => {
       if (active) {
-        console.error(`Unable to load college logo image: ${src}`);
+        console.error(`Unable to load logo image: ${src}`);
       }
     };
     image.src = src;
@@ -185,7 +195,7 @@ export function ElectricLogo({ src }: ElectricLogoProps) {
       image.onload = null;
       image.onerror = null;
     };
-  }, [src]);
+  }, [color, glowColor, sparkColor, src]);
 
   return (
     <span

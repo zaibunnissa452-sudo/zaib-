@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-THPXG37K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GTM-THPXG37K');
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
@@ -40,6 +49,47 @@
       name="twitter:image"
       content="https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1200"
     />
+
+    <!-- LocalBusiness & Photographer Schema for Hyderabad Local SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Photographer",
+      "name": "Style Studio Photography",
+      "alternateName": "Style Studio",
+      "founder": {
+        "@type": "Person",
+        "name": "Mohammed Saleemuddin",
+        "jobTitle": "Lead Photographer"
+      },
+      "telephone": "+919885037928",
+      "url": "https://v0-project-six-phi-96.vercel.app/photography",
+      "image": "https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Hyderabad",
+        "addressRegion": "Telangana",
+        "addressCountry": "IN"
+      },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Hyderabad"
+        },
+        {
+          "@type": "City",
+          "name": "Secunderabad"
+        }
+      ],
+      "priceRange": "$$",
+      "knowsAbout": [
+        "Wedding photography across Hindu, Muslim, Christian, Sikh, and all faiths",
+        "Birthday and family celebrations",
+        "Press and media photography",
+        "Corporate and brand events"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

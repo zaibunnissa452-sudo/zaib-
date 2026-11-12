@@ -123,7 +123,7 @@ function AppContent() {
 
 export default function App() {
   const path = window.location.pathname.replace(/\/+$/, "");
-  if (path === "/photography" || path === "/photography.html") {
+  if (path !== "/canteen") {
     return <PhotographySite />;
   }
 

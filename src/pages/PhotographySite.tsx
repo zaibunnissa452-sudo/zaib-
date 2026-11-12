@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ElectricLogo } from "../components/ElectricLogo";
+import { trackEvent } from "../lib/analytics";
 import "./photography.css";
 import { PhotographyAssistant, whatsappUrl } from "./PhotographyAssistant";
 
@@ -216,6 +217,7 @@ const heroServices = [
   { label: "Weddings", coverage: "Photography + video", slide: 0 },
   { label: "Birthdays", coverage: "Photography + video", slide: 1 },
   { label: "Press events", coverage: "Photography only", slide: 2 },
+  { label: "Brands & Business", coverage: "Photography + launches", slide: 3 },
 ] as const;
 
 const eventTypes = [
@@ -347,6 +349,12 @@ export function PhotographySite() {
     ]
       .filter(Boolean)
       .join("\n");
+
+    trackEvent("generate_lead", {
+      method: "whatsapp_form",
+      event_type: eventType,
+      has_date: Boolean(date),
+    });
 
     window.location.assign(whatsappUrl(message));
   }
@@ -720,7 +728,11 @@ export function PhotographySite() {
             Share a few details about your wedding, birthday, press assignment,
             launch, or event and Mohammed Saleemuddin will follow up.
           </p>
-          <a className="photo-contact-phone" href="tel:+919885037928">
+          <a
+            className="photo-contact-phone"
+            href="tel:+919885037928"
+            onClick={() => trackEvent("contact_phone", { method: "phone_call" })}
+          >
             Call Mohammed Saleemuddin <span>+91 98850 37928</span>
           </a>
         </Reveal>

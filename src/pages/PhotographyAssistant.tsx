@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { trackEvent } from "../lib/analytics";
 import "./photography-assistant.css";
 
 type ChatMessage = {
@@ -147,6 +148,7 @@ export function PhotographyAssistant() {
 
             <a
               className="photo-chat-whatsapp"
+              onClick={() => trackEvent("contact_whatsapp", { source: "chat_assistant" })}
               href={whatsappUrl("Hello Saleem, I found Style Studio through your website and would like to enquire about photography.")}
               target="_blank"
               rel="noreferrer"

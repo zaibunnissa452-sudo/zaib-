@@ -37,7 +37,7 @@ function findOuterEdge(
       data[offset] * 0.2126 +
       data[offset + 1] * 0.7152 +
       data[offset + 2] * 0.0722;
-    if (edgeMode === "alpha" || luminance >= 64) foreground[index] = 1;
+    if (edgeMode === "alpha" || luminance >= 50) foreground[index] = 1;
   }
 
   const addOutsidePixel = (index: number) => {
@@ -90,133 +90,165 @@ function findOuterEdge(
 
 export function ElectricLogo({
   src,
-  color = "#00e5ff",
-  glowColor = color,
-  sparkColor = "#bdf9ff",
-  edgeMode = "alpha",
-  drawSource = true,
+  color = "#f0c66a",
+  glowColor = "#e9b957",
+  sparkColor = "#fff7d6",
+  edgeMode = "luminance",
+  drawSource = false,
 }: ElectricLogoProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hoverRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d");
-    if (!canvas || !context) return;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
 
     let active = true;
     let animationFrame = 0;
-    let lastFrameTime = 0;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const image = new Image();
 
-    const renderFrame = (timestamp: number, edges: EdgeSegment[]) => {
-      if (!context || !canvas) return;
-      const { width, height } = canvas;
-      const hovered = hoverRef.current;
-      const luminanceEdges = edgeMode === "luminance";
-      const effectStrength = luminanceEdges ? 1.8 : 1;
-      const normalAlpha = luminanceEdges ? 0.8 : 0.65;
-      const hoverAlpha = luminanceEdges ? 1 : 0.9;
-      context.clearRect(0, 0, width, height);
-      if (drawSource) context.drawImage(image, 0, 0, width, height);
-      context.save();
-      context.globalCompositeOperation = "screen";
-      context.beginPath();
-      for (const edge of edges) {
-        context.moveTo(edge.startX, edge.startY);
-        context.lineTo(edge.endX, edge.endY);
-      }
-      context.lineCap = "round";
-      context.lineJoin = "round";
-      context.strokeStyle = color;
-      context.globalAlpha = hovered ? hoverAlpha : normalAlpha;
-      context.lineWidth = (hovered ? 2 : 1.4) * effectStrength;
-      context.shadowColor = glowColor;
-      context.shadowBlur = (hovered ? 16 : 10) * effectStrength;
-      context.stroke();
-      context.globalAlpha = 1;
+    const startAnimation = (edges: EdgeSegment[]) => {
+      if (edges.length === 0) return;
 
-      if (!reducedMotion) {
-        const sparkCount = hovered ? 14 : 7;
+      const render = (time: number) => {
+        if (!active || !canvas || !context) return;
+        const { width, height } = canvas;
+        const hovered = hoverRef.current;
+        const scale = Math.max(1, width / 250);
+
+        context.clearRect(0, 0, width, height);
+        if (drawSource) context.drawImage(image, 0, 0, width, height);
+
+        context.save();
+        context.globalCompositeOperation = "screen";
+
+        // Voltage flicker calculation
+        const voltage = 0.8 + Math.random() * 0.2;
+
+        // 1. Base luminous edge outline
         context.beginPath();
-        for (let spark = 0; spark < sparkCount; spark += 1) {
+        for (let i = 0; i < edges.length; i += 2) {
+          const edge = edges[i];
+          context.moveTo(edge.startX, edge.startY);
+          context.lineTo(edge.endX, edge.endY);
+        }
+        context.lineCap = "round";
+        context.lineJoin = "round";
+        context.strokeStyle = color;
+        context.globalAlpha = (hovered ? 0.95 : 0.75) * voltage;
+        context.lineWidth = (hovered ? 2.8 : 1.8) * scale;
+        context.shadowColor = glowColor;
+        context.shadowBlur = (hovered ? 24 : 14) * scale;
+        context.stroke();
+
+        // 2. Traveling high-voltage pulses along contour
+        const pulseCycle = (time * 0.001) % 1;
+        const pulseCount = 4;
+        context.beginPath();
+        for (let p = 0; p < pulseCount; p += 1) {
+          const centerRatio = (pulseCycle + p / pulseCount) % 1;
+          const centerIdx = Math.floor(centerRatio * edges.length);
+          const range = Math.floor(edges.length * 0.035);
+
+          for (let step = -range; step <= range; step += 1) {
+            const idx = (centerIdx + step + edges.length) % edges.length;
+            const edge = edges[idx];
+            context.moveTo(edge.startX, edge.startY);
+            context.lineTo(edge.endX, edge.endY);
+          }
+        }
+        context.strokeStyle = "#ffffff";
+        context.globalAlpha = 0.85 * voltage;
+        context.lineWidth = 2.4 * scale;
+        context.shadowColor = glowColor;
+        context.shadowBlur = 18 * scale;
+        context.stroke();
+
+        // 3. Dynamic crackling lightning sparks (24-40 bolts dancing each frame)
+        const sparkCount = hovered ? 38 : 24;
+        context.beginPath();
+        for (let s = 0; s < sparkCount; s += 1) {
           const edge = edges[Math.floor(Math.random() * edges.length)];
           if (!edge) continue;
 
-          let x = (edge.startX + edge.endX) / 2;
-          let y = (edge.startY + edge.endY) / 2;
+          let currentX = (edge.startX + edge.endX) / 2;
+          let currentY = (edge.startY + edge.endY) / 2;
           const tangentX = -edge.normalY;
           const tangentY = edge.normalX;
-          context.moveTo(x, y);
 
-          const length = 8 + Math.random() * (hovered ? 28 : 18);
-          const segments = 2 + Math.floor(Math.random() * 3);
-          for (let step = 1; step <= segments; step += 1) {
-            const progress = step / segments;
-            const jitter = (Math.random() - 0.5) * 12;
-            x =
+          context.moveTo(currentX, currentY);
+
+          const arcLength = (12 + Math.random() * (hovered ? 38 : 22)) * scale;
+          const steps = 3 + Math.floor(Math.random() * 3);
+
+          for (let step = 1; step <= steps; step += 1) {
+            const progress = step / steps;
+            const jitter = (Math.random() - 0.5) * 16 * scale;
+            currentX =
               (edge.startX + edge.endX) / 2 +
-              edge.normalX * length * progress +
+              edge.normalX * arcLength * progress +
               tangentX * jitter;
-            y =
+            currentY =
               (edge.startY + edge.endY) / 2 +
-              edge.normalY * length * progress +
+              edge.normalY * arcLength * progress +
               tangentY * jitter;
-            context.lineTo(x, y);
+            context.lineTo(currentX, currentY);
           }
         }
 
+        // Golden aura on lightning
         context.strokeStyle = sparkColor;
-        context.lineWidth = (hovered ? 1.8 : 1.2) * effectStrength;
-        context.shadowBlur = 12 * effectStrength;
+        context.lineWidth = (hovered ? 2.5 : 1.6) * scale;
+        context.shadowColor = glowColor;
+        context.shadowBlur = 16 * scale;
+        context.globalAlpha = 1;
         context.stroke();
-      }
 
-      context.restore();
-      if (!reducedMotion && active) {
-        lastFrameTime = timestamp;
-        animationFrame = window.requestAnimationFrame((nextTimestamp) => {
-          if (nextTimestamp - lastFrameTime < 30) {
-            animationFrame = window.requestAnimationFrame((laterTimestamp) =>
-              renderFrame(laterTimestamp, edges),
-            );
-            return;
-          }
-          renderFrame(nextTimestamp, edges);
-        });
-      }
+        // Hot white core
+        context.strokeStyle = "#ffffff";
+        context.lineWidth = 1.0 * scale;
+        context.stroke();
+
+        context.restore();
+
+        animationFrame = window.requestAnimationFrame(render);
+      };
+
+      animationFrame = window.requestAnimationFrame(render);
     };
 
-    image.onload = () => {
-      if (!active) return;
-      canvas.width = image.naturalWidth;
-      canvas.height = image.naturalHeight;
+    const processImage = () => {
+      if (!active || !canvas) return;
+      canvas.width = image.naturalWidth || 1365;
+      canvas.height = image.naturalHeight || 768;
+
       const sourceCanvas = document.createElement("canvas");
-      sourceCanvas.width = image.naturalWidth;
-      sourceCanvas.height = image.naturalHeight;
+      sourceCanvas.width = canvas.width;
+      sourceCanvas.height = canvas.height;
       const imageContext = sourceCanvas.getContext("2d", { willReadFrequently: true });
       if (!imageContext) return;
+
       imageContext.drawImage(image, 0, 0);
-      const edges = findOuterEdge(
-        imageContext.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height),
-        edgeMode,
-      );
-      renderFrame(0, edges);
+      const edgeData = imageContext.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+      const edges = findOuterEdge(edgeData, edgeMode);
+      startAnimation(edges);
     };
 
-    image.onerror = () => {
-      if (active) {
-        console.error(`Unable to load logo image: ${src}`);
-      }
-    };
+    image.crossOrigin = "anonymous";
+    image.onload = processImage;
     image.src = src;
+
+    // Handle cached image immediately
+    if (image.complete && image.naturalWidth > 0) {
+      processImage();
+    }
 
     return () => {
       active = false;
       window.cancelAnimationFrame(animationFrame);
       image.onload = null;
-      image.onerror = null;
     };
   }, [color, drawSource, edgeMode, glowColor, sparkColor, src]);
 

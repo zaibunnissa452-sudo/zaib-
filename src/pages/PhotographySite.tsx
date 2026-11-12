@@ -4,6 +4,11 @@ import { ElectricLogo } from "../components/ElectricLogo";
 import { trackEvent } from "../lib/analytics";
 import "./photography.css";
 import { PhotographyAssistant, whatsappUrl } from "./PhotographyAssistant";
+import { GoldParticles } from "../components/GoldParticles";
+import { SpotlightCard } from "../components/SpotlightCard";
+import { MagneticButton } from "../components/MagneticButton";
+import { GoldenGlowCursor } from "../components/GoldenGlowCursor";
+import { KineticText } from "../components/KineticText";
 
 const stories: Array<{
   title: string;
@@ -365,6 +370,7 @@ export function PhotographySite() {
 
   return (
     <main className="photo-site">
+      <GoldenGlowCursor />
       <motion.div
         className="photo-scroll-progress"
         style={{ scaleX: scrollYProgress }}
@@ -404,9 +410,9 @@ export function PhotographySite() {
           <a href="#stories" onClick={closeMenu}>Gallery</a>
           <a href="#event-services" onClick={closeMenu}>Events</a>
           <a href="#approach" onClick={closeMenu}>Our approach</a>
-          <a className="photo-nav-cta" href="#contact" onClick={closeMenu}>
+          <MagneticButton href="#contact" className="photo-nav-cta" onClick={closeMenu}>
             Check your date <span aria-hidden="true">↗</span>
-          </a>
+          </MagneticButton>
         </nav>
       </header>
 
@@ -431,6 +437,7 @@ export function PhotographySite() {
           />
         </AnimatePresence>
         <div className="photo-hero-shade" />
+        <GoldParticles particleCount={45} speed={0.35} />
         <motion.div
           className="photo-hero-copy"
           initial={prefersReducedMotion ? false : { opacity: 0, y: 28 }}
@@ -472,13 +479,16 @@ export function PhotographySite() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: prefersReducedMotion ? 0 : 0.35 }}
             >
-              <h1>{heroSlides[activeHero].heading}<br /><em>{heroSlides[activeHero].emphasis}</em></h1>
+              <KineticText
+                heading={heroSlides[activeHero].heading}
+                emphasis={heroSlides[activeHero].emphasis}
+              />
               <p className="photo-hero-description">{heroSlides[activeHero].description}</p>
             </motion.div>
           </AnimatePresence>
-          <a className="photo-button photo-button-light" href="#contact">
+          <MagneticButton href="#contact" className="photo-button photo-button-light">
             Tell us what you’re planning <span aria-hidden="true">↗</span>
-          </a>
+          </MagneticButton>
         </motion.div>
         <div className="photo-hero-bottom">
           <p className="photo-hero-note">
@@ -566,9 +576,9 @@ export function PhotographySite() {
               across traditions, birthdays, and press events. I focus on the
               people and in-between moments that make each gathering yours.
             </p>
-            <a className="photo-button" href="#stories">
+            <MagneticButton href="#stories" className="photo-button">
               Explore my photographs <span aria-hidden="true">↗</span>
-            </a>
+            </MagneticButton>
           </div>
         </div>
       </section>
@@ -597,7 +607,8 @@ export function PhotographySite() {
         </Reveal>
         <div className="photo-event-grid">
           {eventServices.map((service, index) => (
-            <Reveal className="photo-event-card" key={service.number} delay={index * 0.1}>
+            <Reveal key={service.number} className="photo-event-card-reveal" delay={index * 0.1}>
+              <SpotlightCard className="photo-event-card">
               <span className="photo-event-number">{service.number}</span>
               <h3>{service.title}</h3>
               <p>{service.description}</p>
@@ -610,6 +621,7 @@ export function PhotographySite() {
               >
                 Enquire about this service <span aria-hidden="true">↗</span>
               </a>
+            </SpotlightCard>
             </Reveal>
           ))}
         </div>
@@ -728,13 +740,13 @@ export function PhotographySite() {
             Share a few details about your wedding, birthday, press assignment,
             launch, or event and Mohammed Saleemuddin will follow up.
           </p>
-          <a
-            className="photo-contact-phone"
+          <MagneticButton
             href="tel:+919885037928"
+            className="photo-contact-phone"
             onClick={() => trackEvent("contact_phone", { method: "phone_call" })}
           >
             Call Mohammed Saleemuddin <span>+91 98850 37928</span>
-          </a>
+          </MagneticButton>
         </Reveal>
         <Reveal className="photo-form-reveal" delay={0.12}>
         <form className="photo-inquiry-form" onSubmit={handleSubmit}>
@@ -782,9 +794,9 @@ export function PhotographySite() {
           <p className="photo-form-note">
             WhatsApp will open with your enquiry ready to review and send to Saleem.
           </p>
-          <button className="photo-button" type="submit">
+          <MagneticButton className="photo-button" type="submit">
             Continue on WhatsApp <span aria-hidden="true">↗</span>
-          </button>
+          </MagneticButton>
         </form>
         </Reveal>
       </section>

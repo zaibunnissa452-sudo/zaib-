@@ -38,7 +38,7 @@ export function Nav({ active, onNavigate, onCartClick }: NavProps) {
             onClick={() => onNavigate("home")}
             aria-label="Lords Smart Canteen home"
           >
-            <ElectricLogo src="/images/lords-college-logo.png" />
+            <ElectricLogo src="/images/lords-college-logo.png" drawSource />
             <span className="whitespace-nowrap">LORDS<span className="neon-cyan ml-1.5">/SC</span></span>
           </button>
           <div className="hidden md:flex items-center gap-7">

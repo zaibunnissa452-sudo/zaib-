@@ -5,3 +5,5 @@ node_modules/
 dist/
 
 supabase/.temp/
+.vercel
+.env*

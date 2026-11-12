@@ -1138,7 +1138,7 @@
 
   .photo-hero-note {
     font-size: 7px;
-    max-width: 100%;
+    max-width: calc(100% - 110px);
     text-align: left;
   }
 
@@ -1321,5 +1321,284 @@
   .photo-service-option,
   .photo-nav nav {
     transition: none;
+  }
+}
+
+.photo-site {
+  --photo-ink: #f3f0e9;
+  --photo-paper: #090a0e;
+  --photo-muted: #aaa8b0;
+  background: var(--photo-paper);
+  color: var(--photo-ink);
+}
+
+.photo-nav {
+  background: rgba(7, 8, 12, 0.94);
+  border-bottom: 1px solid rgba(235, 197, 122, 0.12);
+}
+
+.photo-scroll-progress {
+  background: linear-gradient(90deg, #c99e56, #fff0bd, #e9b957);
+  box-shadow: 0 0 12px rgba(235, 197, 122, 0.55);
+}
+
+.photo-brand {
+  isolation: isolate;
+  position: relative;
+}
+
+.photo-brand::before,
+.photo-brand::after {
+  border-radius: inherit;
+  content: "";
+  inset: -3px;
+  pointer-events: none;
+  position: absolute;
+}
+
+.photo-brand::before {
+  animation: photo-electric-sweep 4.4s ease-in-out infinite;
+  opacity: 0.68;
+  background: linear-gradient(
+    112deg,
+    transparent 42%,
+    rgba(255, 246, 213, 0.12) 47%,
+    rgba(255, 255, 255, 0.52) 49%,
+    rgba(246, 197, 95, 0.34) 50%,
+    transparent 54%
+  );
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+
+.photo-brand::after {
+  animation: photo-electric-sparks 2.8s steps(1, end) infinite;
+  background:
+    radial-gradient(circle at 6% 14%, #fff8d8 0 1px, transparent 2px),
+    radial-gradient(circle at 94% 76%, #f5c96f 0 1px, transparent 2px),
+    radial-gradient(circle at 83% 8%, #fff 0 1px, transparent 2px);
+  box-shadow: 0 0 12px rgba(229, 187, 105, 0.42);
+  opacity: 0.5;
+  z-index: 3;
+}
+
+.photo-brand img {
+  position: relative;
+  z-index: 1;
+}
+
+.photo-brand:hover {
+  box-shadow: 0 0 34px rgba(236, 195, 110, 0.55);
+}
+
+.photo-intro {
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(194, 150, 73, 0.1), transparent 68%),
+    #0b0c11;
+}
+
+.photo-event-services,
+.photo-contact {
+  background:
+    radial-gradient(ellipse at 92% 10%, rgba(108, 91, 62, 0.12), transparent 50%),
+    #111219;
+}
+
+.photo-stories {
+  background:
+    radial-gradient(ellipse at 8% 12%, rgba(117, 91, 50, 0.13), transparent 45%),
+    #0c0d12;
+}
+
+.photo-event-card {
+  background: rgba(25, 26, 34, 0.78);
+  border-color: rgba(243, 240, 233, 0.12);
+  color: var(--photo-ink);
+}
+
+.photo-event-card:hover {
+  background: #1b1c24;
+  border-color: rgba(231, 189, 114, 0.56);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+}
+
+.photo-event-number,
+.photo-event-card a,
+.photo-event-card a:hover,
+.photo-press-mark,
+.photo-intro .photo-eyebrow,
+.photo-section-heading .photo-eyebrow,
+.photo-approach-copy .photo-eyebrow,
+.photo-contact .photo-eyebrow,
+.photo-hero h1 em,
+.photo-intro h2 em,
+.photo-section-heading h2 em,
+.photo-approach-copy h2 em,
+.photo-contact h2 em {
+  color: #e7bd72;
+}
+
+.photo-event-card p,
+.photo-press-note p span,
+.photo-section-heading > p,
+.photo-stock-note,
+.photo-intro > p:last-child,
+.photo-approach-copy > p:not(.photo-eyebrow),
+.photo-contact-heading > p:last-child,
+.photo-contact-phone span {
+  color: #b2b0b8;
+}
+
+.photo-press-note {
+  border-color: rgba(243, 240, 233, 0.16);
+}
+
+.photo-press-mark {
+  border-color: rgba(231, 189, 114, 0.7);
+}
+
+.photo-stories .photo-stock-note a,
+.photo-event-card a {
+  border-color: rgba(231, 189, 114, 0.62);
+}
+
+.photo-story-filters button {
+  border-color: rgba(243, 240, 233, 0.22);
+  color: #c4c1c8;
+}
+
+.photo-story-filters button:hover {
+  border-color: #e7bd72;
+  color: #f3d9a3;
+}
+
+.photo-story-filters button.is-active {
+  background: #e7bd72;
+  border-color: #e7bd72;
+  color: #15151a;
+}
+
+.photo-approach {
+  background: #0b0c11;
+}
+
+.photo-approach-image {
+  background: #1a1b22;
+}
+
+.photo-text-link {
+  border-color: rgba(231, 189, 114, 0.72);
+}
+
+.photo-contact-phone {
+  border-color: rgba(243, 240, 233, 0.2);
+}
+
+.photo-contact-phone:hover,
+.photo-nav nav a:hover,
+.photo-footer > a:last-child:hover,
+.photo-text-link:hover {
+  color: #f0ca7c;
+}
+
+.photo-inquiry-form label {
+  color: #d3d0d7;
+}
+
+.photo-inquiry-form input,
+.photo-inquiry-form textarea,
+.photo-inquiry-form select {
+  border-color: rgba(243, 240, 233, 0.24) !important;
+  color: #f3f0e9 !important;
+  color-scheme: dark;
+}
+
+.photo-inquiry-form select option {
+  background: #15161d;
+  color: #f3f0e9;
+}
+
+.photo-inquiry-form input::placeholder,
+.photo-inquiry-form textarea::placeholder {
+  color: #87858e !important;
+}
+
+.photo-inquiry-form input:focus,
+.photo-inquiry-form textarea:focus,
+.photo-inquiry-form select:focus {
+  border-color: #e7bd72 !important;
+}
+
+.photo-form-note {
+  color: #d4bd90;
+}
+
+.photo-button {
+  background: #e7bd72;
+  border-color: #e7bd72;
+  color: #15151a;
+}
+
+.photo-button:hover {
+  background: transparent;
+  color: #f3f0e9;
+}
+
+.photo-button-light {
+  background: #f0d293;
+  border-color: #f0d293;
+  color: #15151a !important;
+}
+
+.photo-button-light:hover {
+  background: transparent;
+  color: white !important;
+}
+
+.photo-nav .photo-nav-cta {
+  border-color: rgba(231, 189, 114, 0.68);
+}
+
+.photo-hero-controls > button:focus-visible,
+.photo-hero-dots button:focus-visible,
+.photo-story-filters button:focus-visible,
+.photo-inquiry-form :focus-visible,
+.photo-menu-toggle:focus-visible {
+  outline: 2px solid #f0d293;
+  outline-offset: 3px;
+}
+
+@keyframes photo-electric-sweep {
+  0%,
+  16% {
+    transform: translateX(-115%) skewX(-24deg);
+  }
+  62%,
+  100% {
+    transform: translateX(115%) skewX(-24deg);
+  }
+}
+
+@keyframes photo-electric-sparks {
+  0%,
+  22%,
+  26%,
+  64%,
+  100% {
+    opacity: 0.16;
+  }
+  24%,
+  70% {
+    opacity: 0.92;
+  }
+  72% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-brand::before,
+  .photo-brand::after {
+    animation: none;
   }
 }

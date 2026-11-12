@@ -316,9 +316,11 @@ export function PhotographySite() {
         aria-hidden="true"
       />
       <header className="photo-nav">
-        <a className="photo-brand" href="#home" aria-label="Style Studio by Mohammed Saleemuddin home">
-          STYLE <span>STUDIO</span>
-          <small>BY MOHAMMED SALEEMUDDIN</small>
+        <a className="photo-brand" href="#home">
+          <img
+            src="/images/photography/style-studio-logo.png"
+            alt="Style Studio Photography — Capture, Cherish, Forever"
+          />
         </a>
         <button
           className="photo-menu-toggle"
@@ -661,8 +663,10 @@ export function PhotographySite() {
 
       <footer className="photo-footer">
         <a className="photo-brand" href="#home">
-          STYLE <span>STUDIO</span>
-          <small>BY MOHAMMED SALEEMUDDIN</small>
+          <img
+            src="/images/photography/style-studio-logo.png"
+            alt="Style Studio Photography — Capture, Cherish, Forever"
+          />
         </a>
         <p>Photography · Weddings, birthdays, press & events · Hyderabad</p>
         <a href="#home">Back to top ↑</a>

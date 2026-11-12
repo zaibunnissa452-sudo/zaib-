@@ -374,6 +374,8 @@ export function PhotographySite() {
               color="#f0c66a"
               glowColor="#e9b957"
               sparkColor="#fff2c6"
+              edgeMode="luminance"
+              drawSource={false}
             />
           </span>
         </a>

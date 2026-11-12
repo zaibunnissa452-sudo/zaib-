@@ -5,6 +5,8 @@ interface ElectricLogoProps {
   color?: string;
   glowColor?: string;
   sparkColor?: string;
+  edgeMode?: "alpha" | "luminance";
+  drawSource?: boolean;
 }
 
 interface EdgeSegment {
@@ -16,16 +18,30 @@ interface EdgeSegment {
   normalY: number;
 }
 
-function findOuterEdge(imageData: ImageData): EdgeSegment[] {
+function findOuterEdge(
+  imageData: ImageData,
+  edgeMode: "alpha" | "luminance",
+): EdgeSegment[] {
   const { data, width, height } = imageData;
   const pixelCount = width * height;
+  const foreground = new Uint8Array(pixelCount);
   const outside = new Uint8Array(pixelCount);
   const queue = new Int32Array(pixelCount);
   let head = 0;
   let tail = 0;
 
+  for (let index = 0; index < pixelCount; index += 1) {
+    const offset = index * 4;
+    if (data[offset + 3] < 128) continue;
+    const luminance =
+      data[offset] * 0.2126 +
+      data[offset + 1] * 0.7152 +
+      data[offset + 2] * 0.0722;
+    if (edgeMode === "alpha" || luminance >= 64) foreground[index] = 1;
+  }
+
   const addOutsidePixel = (index: number) => {
-    if (outside[index] || data[index * 4 + 3] >= 128) return;
+    if (outside[index] || foreground[index]) return;
     outside[index] = 1;
     queue[tail++] = index;
   };
@@ -52,7 +68,7 @@ function findOuterEdge(imageData: ImageData): EdgeSegment[] {
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const index = y * width + x;
-      if (data[index * 4 + 3] < 128) continue;
+      if (!foreground[index]) continue;
 
       if (y === 0 || outside[index - width]) {
         edges.push({ startX: x, startY: y, endX: x + 1, endY: y, normalX: 0, normalY: -1 });
@@ -77,6 +93,8 @@ export function ElectricLogo({
   color = "#00e5ff",
   glowColor = color,
   sparkColor = "#bdf9ff",
+  edgeMode = "alpha",
+  drawSource = true,
 }: ElectricLogoProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hoverRef = useRef(false);
@@ -96,8 +114,12 @@ export function ElectricLogo({
       if (!context || !canvas) return;
       const { width, height } = canvas;
       const hovered = hoverRef.current;
+      const luminanceEdges = edgeMode === "luminance";
+      const effectStrength = luminanceEdges ? 1.8 : 1;
+      const normalAlpha = luminanceEdges ? 0.8 : 0.65;
+      const hoverAlpha = luminanceEdges ? 1 : 0.9;
       context.clearRect(0, 0, width, height);
-      context.drawImage(image, 0, 0, width, height);
+      if (drawSource) context.drawImage(image, 0, 0, width, height);
       context.save();
       context.globalCompositeOperation = "screen";
       context.beginPath();
@@ -108,10 +130,10 @@ export function ElectricLogo({
       context.lineCap = "round";
       context.lineJoin = "round";
       context.strokeStyle = color;
-      context.globalAlpha = hovered ? 0.9 : 0.65;
-      context.lineWidth = hovered ? 2 : 1.4;
+      context.globalAlpha = hovered ? hoverAlpha : normalAlpha;
+      context.lineWidth = (hovered ? 2 : 1.4) * effectStrength;
       context.shadowColor = glowColor;
-      context.shadowBlur = hovered ? 16 : 10;
+      context.shadowBlur = (hovered ? 16 : 10) * effectStrength;
       context.stroke();
       context.globalAlpha = 1;
 
@@ -146,8 +168,8 @@ export function ElectricLogo({
         }
 
         context.strokeStyle = sparkColor;
-        context.lineWidth = hovered ? 1.8 : 1.2;
-        context.shadowBlur = 12;
+        context.lineWidth = (hovered ? 1.8 : 1.2) * effectStrength;
+        context.shadowBlur = 12 * effectStrength;
         context.stroke();
       }
 
@@ -178,6 +200,7 @@ export function ElectricLogo({
       imageContext.drawImage(image, 0, 0);
       const edges = findOuterEdge(
         imageContext.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height),
+        edgeMode,
       );
       renderFrame(0, edges);
     };
@@ -195,7 +218,7 @@ export function ElectricLogo({
       image.onload = null;
       image.onerror = null;
     };
-  }, [color, glowColor, sparkColor, src]);
+  }, [color, drawSource, edgeMode, glowColor, sparkColor, src]);
 
   return (
     <span

@@ -1,0 +1,129 @@
+import { useState, useCallback } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Background } from "./components/Background";
+import { Nav } from "./components/Nav";
+import { CartDrawer } from "./components/CartDrawer";
+import { OrderSuccess } from "./components/OrderSuccess";
+import { Home } from "./pages/Home";
+import { Canteens } from "./pages/Canteens";
+import { Menu } from "./pages/Menu";
+import { LiveQueue } from "./pages/LiveQueue";
+import { OwnerDashboard } from "./pages/OwnerDashboard";
+import { OrderHistory } from "./pages/OrderHistory";
+import { CartProvider } from "./lib/cart";
+import type { Canteen } from "./lib/types";
+import type { GuestOrder } from "./lib/guestOrders";
+
+type TabId = "home" | "canteens" | "menu" | "queue" | "history" | "owner";
+
+function readTrackingToken() {
+  const token = new URLSearchParams(window.location.search).get("track");
+  return token && /^[0-9a-f]{64}$/i.test(token) ? token : null;
+}
+
+function updateTrackingUrl(token: string | null) {
+  const url = new URL(window.location.href);
+  if (token) url.searchParams.set("track", token);
+  else url.searchParams.delete("track");
+  window.history.replaceState({}, "", url.toString());
+}
+
+function AppContent() {
+  const [trackingToken, setTrackingToken] = useState<string | null>(() => readTrackingToken());
+  const [tab, setTab] = useState<TabId>(() => (readTrackingToken() ? "queue" : "home"));
+  const [cartOpen, setCartOpen] = useState(false);
+  const [selectedCanteen, setSelectedCanteen] = useState<Canteen | null>(null);
+  const [recentOrder, setRecentOrder] = useState<GuestOrder | null>(null);
+
+  const handleNavigate = useCallback((next: TabId) => {
+    if (next !== "queue") {
+      setTrackingToken(null);
+      updateTrackingUrl(null);
+    }
+    setTab(next);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const handleSelectCanteen = useCallback((canteen: Canteen) => {
+    setTrackingToken(null);
+    updateTrackingUrl(null);
+    setSelectedCanteen(canteen);
+    setTab("menu");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const handleOrderPlaced = useCallback((order: GuestOrder) => {
+    setTrackingToken(order.trackingToken);
+    updateTrackingUrl(order.trackingToken);
+    setRecentOrder(order);
+    setCartOpen(false);
+  }, []);
+
+  const handleTrackOrder = useCallback((token: string) => {
+    setTrackingToken(token);
+    setTab("queue");
+    updateTrackingUrl(token);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  return (
+    <div className="min-h-screen relative">
+      <Background />
+      <Nav
+        active={tab === "menu" ? "canteens" : tab}
+        onNavigate={handleNavigate}
+        onCartClick={() => setCartOpen(true)}
+      />
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={tab}
+          className="app-page-stage"
+          initial={{ opacity: 0, y: 14, rotateX: 0.8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {tab === "home" && (
+            <Home
+              onExplore={() => handleNavigate("canteens")}
+              onTrackOrder={() => handleNavigate("queue")}
+            />
+          )}
+          {tab === "canteens" && <Canteens onSelectCanteen={handleSelectCanteen} />}
+          {tab === "menu" && selectedCanteen && (
+            <Menu canteen={selectedCanteen} onBack={() => handleNavigate("canteens")} />
+          )}
+          {tab === "menu" && !selectedCanteen && (
+            <div className="min-h-screen flex items-center justify-center pt-16 text-gray-400">
+              Please select a canteen first.
+            </div>
+          )}
+          {tab === "queue" && <LiveQueue trackingToken={trackingToken} />}
+          {tab === "history" && <OrderHistory onTrackOrder={handleTrackOrder} />}
+          {tab === "owner" && <OwnerDashboard />}
+        </motion.div>
+      </AnimatePresence>
+
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        onOrderPlaced={handleOrderPlaced}
+      />
+
+      <OrderSuccess
+        order={recentOrder}
+        onClose={() => setRecentOrder(null)}
+        onViewQueue={handleTrackOrder}
+      />
+    </div>
+  );
+}
+
+export default function CanteenApp() {
+  return (
+    <CartProvider>
+      <AppContent />
+    </CartProvider>
+  );
+}

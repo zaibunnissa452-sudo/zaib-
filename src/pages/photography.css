@@ -43,21 +43,33 @@
 }
 
 .photo-brand {
+  background: #080705;
+  border: 1px solid rgba(225, 180, 111, 0.68);
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(210, 169, 107, 0.22);
   display: inline-block;
   flex: 0 0 auto;
   line-height: 0;
-  transition: transform 180ms ease;
+  padding: 3px;
+  transition: box-shadow 180ms ease, transform 180ms ease;
 }
 
 .photo-brand:hover {
-  transform: translateY(-1px);
+  box-shadow: 0 0 30px rgba(225, 180, 111, 0.42);
+  transform: translateY(-2px);
 }
 
 .photo-brand img {
   display: block;
+  filter: brightness(1.35) contrast(1.08) saturate(1.12);
   height: auto;
   max-width: 42vw;
+  transition: filter 180ms ease;
   width: 250px;
+}
+
+.photo-brand:hover img {
+  filter: brightness(1.5) contrast(1.1) saturate(1.16);
 }
 
 .photo-nav nav {
@@ -1304,6 +1316,7 @@
   .photo-story-button img,
   .photo-story-open,
   .photo-brand,
+  .photo-brand img,
   .photo-menu-icon i,
   .photo-service-option,
   .photo-nav nav {

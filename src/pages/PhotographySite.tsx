@@ -3,7 +3,14 @@ import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } fr
 import "./photography.css";
 import { PhotographyAssistant, whatsappUrl } from "./PhotographyAssistant";
 
-const stories = [
+const stories: Array<{
+  title: string;
+  category: string;
+  type: string;
+  image: string;
+  className: string;
+  isClientWork?: boolean;
+}> = [
   {
     title: "A day woven with tradition",
     category: "Traditional Indian wedding",
@@ -17,7 +24,8 @@ const stories = [
     category: "Muslim wedding celebration",
     type: "Weddings",
     image:
-      "https://images.pexels.com/photos/27865557/pexels-photo-27865557.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "/images/muslim-wedding-client.png",
+    isClientWork: true,
     className: "story-card",
   },
   {
@@ -452,7 +460,7 @@ export function PhotographySite() {
             <p className="photo-eyebrow">EVENT PHOTOGRAPHY</p>
             <h2>See the kinds of stories <em>we can capture.</em></h2>
           </div>
-          <p>Illustrative examples—not photographs from Style Studio client assignments.</p>
+          <p>Illustrative examples are labeled; the Muslim wedding photograph is actual Style Studio work.</p>
         </Reveal>
         <div className="photo-story-filters" role="group" aria-label="Filter stock photo examples by event type">
           {storyFilters.map((filter) => (
@@ -491,7 +499,9 @@ export function PhotographySite() {
                     <span className="photo-story-caption">
                       <span>{story.category.toUpperCase()}</span>
                       <span className="photo-story-title">{story.title}</span>
-                      <span className="photo-story-open">Illustrative image · View details ↗</span>
+                      <span className="photo-story-open">
+                        {story.isClientWork ? "Style Studio photograph" : "Illustrative image"} · View details ↗
+                      </span>
                     </span>
                   </button>
                 </motion.div>
@@ -649,7 +659,9 @@ export function PhotographySite() {
                   <p>{stories[activeStory].category}</p>
                   <h2>{stories[activeStory].title}</h2>
                   <p className="photo-lightbox-credit">
-                    Illustrative image · not a Style Studio client assignment
+                    {stories[activeStory].isClientWork
+                      ? "Photographed by Style Studio"
+                      : "Illustrative image · not a Style Studio client assignment"}
                   </p>
                 </div>
                 <div className="photo-lightbox-controls">

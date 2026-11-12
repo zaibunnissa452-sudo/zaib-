@@ -259,6 +259,20 @@ const eventServices = [
   },
 ];
 
+function updatePointerTilt(element: HTMLElement, clientX: number, clientY: number) {
+  const bounds = element.getBoundingClientRect();
+  if (!bounds.width || !bounds.height) return;
+  const horizontal = (clientX - bounds.left) / bounds.width - 0.5;
+  const vertical = (clientY - bounds.top) / bounds.height - 0.5;
+  element.style.setProperty("--photo-tilt-x", `${vertical * -8}deg`);
+  element.style.setProperty("--photo-tilt-y", `${horizontal * 10}deg`);
+}
+
+function resetPointerTilt(element: HTMLElement) {
+  element.style.setProperty("--photo-tilt-x", "0deg");
+  element.style.setProperty("--photo-tilt-y", "0deg");
+}
+
 export function PhotographySite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeStory, setActiveStory] = useState<number | null>(null);
@@ -431,7 +445,7 @@ export function PhotographySite() {
                 aria-label={`${service.label}: ${service.coverage}`}
                 aria-pressed={activeHero === service.slide}
                 onClick={() => setActiveHero(service.slide)}
-                whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+                whileHover={prefersReducedMotion ? undefined : { y: -3, rotateX: 2, rotateY: -1, scale: 1.01 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
               >
                 <span>{service.label}</span>
@@ -501,6 +515,53 @@ export function PhotographySite() {
           <span />
         </a>
       </motion.section>
+
+      <section className="photo-photographer" aria-labelledby="photo-photographer-title">
+        <div className="photo-photographer-layout">
+          <div
+            className="photo-photographer-portrait"
+            onPointerMove={(event) => {
+              if (
+                prefersReducedMotion ||
+                window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+                event.pointerType !== "mouse"
+              ) {
+                resetPointerTilt(event.currentTarget);
+                return;
+              }
+              updatePointerTilt(event.currentTarget, event.clientX, event.clientY);
+            }}
+            onPointerLeave={(event) => resetPointerTilt(event.currentTarget)}
+          >
+            <div className="photo-photographer-portrait-card">
+              <img
+                src="/images/photography/saleem-photographer.jpg"
+                alt="Saleem, the Style Studio photographer, at an evening event"
+              />
+              <span className="photo-photographer-caption">
+                <strong>Saleem</strong>
+                <span>Photographer · Hyderabad</span>
+              </span>
+            </div>
+          </div>
+          <div className="photo-photographer-copy">
+            <p className="photo-eyebrow">MEET YOUR PHOTOGRAPHER</p>
+            <h2 id="photo-photographer-title">
+              I’m Saleem.
+              <br />
+              <em>I capture what matters.</em>
+            </h2>
+            <p>
+              I’m Mohammed Saleemuddin, a Hyderabad photographer for weddings
+              across traditions, birthdays, and press events. I focus on the
+              people and in-between moments that make each gathering yours.
+            </p>
+            <a className="photo-button" href="#stories">
+              Explore my photographs <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
 
       <Reveal className="photo-intro">
         <p className="photo-eyebrow">PEOPLE, PLACES & PURPOSEFUL MOMENTS</p>
@@ -587,6 +648,18 @@ export function PhotographySite() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}
+                  onPointerMove={(event) => {
+                    if (
+                      prefersReducedMotion ||
+                      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+                      event.pointerType !== "mouse"
+                    ) {
+                      resetPointerTilt(event.currentTarget);
+                      return;
+                    }
+                    updatePointerTilt(event.currentTarget, event.clientX, event.clientY);
+                  }}
+                  onPointerLeave={(event) => resetPointerTilt(event.currentTarget)}
                 >
                   <button
                     className="photo-story-button"

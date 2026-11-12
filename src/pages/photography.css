@@ -229,6 +229,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0 0 18px;
   max-width: 580px;
+  perspective: 900px;
 }
 
 .photo-service-option {
@@ -410,6 +411,132 @@
   line-height: 1.95;
   margin: 0 auto;
   max-width: 510px;
+}
+
+.photo-photographer {
+  background:
+    radial-gradient(ellipse at 18% 48%, rgba(194, 150, 73, 0.12), transparent 40%),
+    #090a0e;
+  overflow: hidden;
+  padding: 120px 8%;
+}
+
+.photo-photographer-layout {
+  align-items: center;
+  display: grid;
+  gap: clamp(48px, 8vw, 120px);
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  margin: 0 auto;
+  max-width: 1120px;
+}
+
+.photo-photographer-portrait {
+  --photo-tilt-x: 0deg;
+  --photo-tilt-y: 0deg;
+  aspect-ratio: 0.66;
+  justify-self: center;
+  max-width: 450px;
+  perspective: 1100px;
+  position: relative;
+  width: 100%;
+}
+
+.photo-photographer-portrait-card {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  transform-style: preserve-3d;
+  width: 100%;
+}
+
+.photo-photographer-portrait-card::before {
+  background: linear-gradient(145deg, rgba(231, 189, 114, 0.08), transparent 60%);
+  border: 1px solid rgba(231, 189, 114, 0.42);
+  border-radius: 12px;
+  content: "";
+  inset: 4% -5% 3% 8%;
+  position: absolute;
+  transform: translateZ(-24px) rotate(-4deg);
+  z-index: 0;
+}
+
+.photo-photographer-portrait img {
+  border: 1px solid rgba(231, 189, 114, 0.4);
+  border-radius: 10px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 68%;
+  position: relative;
+  transform: translateZ(12px);
+  transition: none;
+  width: 100%;
+  z-index: 1;
+}
+
+.photo-photographer-caption {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  background: rgba(9, 10, 14, 0.82);
+  border: 1px solid rgba(231, 189, 114, 0.32);
+  border-radius: 8px;
+  bottom: 24px;
+  display: flex;
+  gap: 12px;
+  left: 20px;
+  padding: 12px 15px;
+  position: absolute;
+  transform: translateZ(42px);
+}
+
+.photo-photographer-caption strong {
+  color: #f0d293;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.photo-photographer-caption > span {
+  border-left: 1px solid rgba(243, 240, 233, 0.24);
+  color: #d3d0d7;
+  font-size: 10px;
+  padding-left: 12px;
+}
+
+.photo-photographer-copy .photo-eyebrow {
+  color: #e7bd72;
+  letter-spacing: 0.2em;
+}
+
+.photo-photographer-copy h2 {
+  color: var(--photo-ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 5.4vw, 76px);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 1.04;
+  margin: 20px 0 24px;
+}
+
+.photo-photographer-copy h2 em {
+  color: #e7bd72;
+  font-style: normal;
+}
+
+.photo-photographer-copy > p:not(.photo-eyebrow) {
+  color: #b2b0b8;
+  font-size: 14px;
+  line-height: 1.9;
+  margin: 0 0 28px;
+  max-width: 520px;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .photo-photographer-portrait-card {
+    transform: rotateX(var(--photo-tilt-x)) rotateY(var(--photo-tilt-y));
+    transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    will-change: transform;
+  }
 }
 
 .photo-event-services {
@@ -609,6 +736,8 @@
   min-width: 0;
   overflow: hidden;
   position: relative;
+  --photo-tilt-x: 0deg;
+  --photo-tilt-y: 0deg;
 }
 
 .story-card-tall {
@@ -637,6 +766,32 @@
   position: relative;
   text-align: left;
   width: 100%;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .story-card {
+    overflow: visible;
+    perspective: 1100px;
+  }
+
+  .story-card:hover {
+    z-index: 2;
+  }
+
+  .photo-story-button {
+    border-radius: 10px;
+    overflow: hidden;
+    transform: rotateX(var(--photo-tilt-x)) rotateY(var(--photo-tilt-y));
+    transform-style: preserve-3d;
+    transition:
+      transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 260ms ease;
+    will-change: transform;
+  }
+
+  .story-card:hover .photo-story-button {
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(231, 189, 114, 0.28);
+  }
 }
 
 .photo-story-button:focus-visible {
@@ -1152,6 +1307,37 @@
 
   .photo-intro {
     padding: 90px 8%;
+  }
+
+  .photo-photographer {
+    padding: 80px 8%;
+  }
+
+  .photo-photographer-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 48px;
+  }
+
+  .photo-photographer-portrait {
+    max-width: 410px;
+  }
+
+  .photo-photographer-copy {
+    text-align: center;
+  }
+
+  .photo-photographer-copy h2 {
+    font-size: clamp(42px, 10vw, 64px);
+  }
+
+  .photo-photographer-copy > p:not(.photo-eyebrow) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .photo-photographer-copy .photo-button {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .photo-event-services {

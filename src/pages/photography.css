@@ -553,6 +553,10 @@
   min-height: 0;
 }
 
+.story-card-client-portrait {
+  aspect-ratio: 0.58;
+}
+
 .photo-story-button {
   background: transparent;
   border: 0;
@@ -1120,6 +1124,10 @@
   .story-card-client-photo {
     aspect-ratio: 1.5;
     grid-column: span 2;
+  }
+
+  .story-card-client-portrait {
+    aspect-ratio: 0.58;
   }
 
   .photo-story-caption {

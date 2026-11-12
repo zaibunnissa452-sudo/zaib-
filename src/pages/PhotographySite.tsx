@@ -29,6 +29,22 @@ const stories: Array<{
     className: "story-card story-card-client-photo",
   },
   {
+    title: "A promise written together",
+    category: "Muslim wedding ceremony",
+    type: "Weddings",
+    image: "/images/photography/muslim-wedding-signing.jpeg",
+    isClientWork: true,
+    className: "story-card story-card-client-portrait",
+  },
+  {
+    title: "A moment to begin a life together",
+    category: "Muslim wedding celebration",
+    type: "Weddings",
+    image: "/images/photography/muslim-wedding-couple.jpeg",
+    isClientWork: true,
+    className: "story-card",
+  },
+  {
     title: "A promise shared with family",
     category: "Christian wedding ceremony",
     type: "Weddings",
@@ -75,6 +91,22 @@ const stories: Array<{
     image:
       "https://images.pexels.com/photos/27176823/pexels-photo-27176823.jpeg?auto=compress&cs=tinysrgb&w=1200",
     className: "story-card",
+  },
+  {
+    title: "A celebration dinner with friends",
+    category: "Celebration dinner",
+    type: "Celebrations",
+    image: "/images/photography/celebration-dinner.jpeg",
+    isClientWork: true,
+    className: "story-card",
+  },
+  {
+    title: "A birthday bright with sparklers",
+    category: "Birthday celebration",
+    type: "Birthdays",
+    image: "/images/photography/birthday-sparklers.jpeg",
+    isClientWork: true,
+    className: "story-card story-card-client-portrait",
   },
   {
     title: "In the room where news breaks",
@@ -460,9 +492,9 @@ export function PhotographySite() {
             <p className="photo-eyebrow">EVENT PHOTOGRAPHY</p>
             <h2>See the kinds of stories <em>we can capture.</em></h2>
           </div>
-          <p>Illustrative examples are labeled; the Muslim wedding photograph is actual Style Studio work.</p>
+          <p>Style Studio photographs are labeled separately from illustrative examples.</p>
         </Reveal>
-        <div className="photo-story-filters" role="group" aria-label="Filter stock photo examples by event type">
+        <div className="photo-story-filters" role="group" aria-label="Filter event photography examples by type">
           {storyFilters.map((filter) => (
             <button
               className={activeFilter === filter ? "is-active" : ""}

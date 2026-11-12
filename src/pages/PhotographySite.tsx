@@ -1,152 +1,370 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import "./photography.css";
+import { PhotographyAssistant } from "./PhotographyAssistant";
 
 const stories = [
   {
-    title: "A promise in the garden",
-    category: "WEDDING · HYDERABAD",
+    title: "A day woven with tradition",
+    category: "Traditional Indian wedding",
+    type: "Weddings",
     image:
-      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1100&q=85",
+      "https://images.pexels.com/photos/8804917/pexels-photo-8804917.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Manik Mandal",
+    source: "https://www.pexels.com/photo/close-up-shot-of-a-wedding-couple-in-traditional-clothing-8804917/",
     className: "story-card story-card-tall",
   },
   {
-    title: "The quiet before the vows",
-    category: "NIKAH · HYDERABAD",
+    title: "A celebration close to the heart",
+    category: "Muslim wedding celebration",
+    type: "Weddings",
     image:
-      "https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=1000&q=85",
+      "https://images.pexels.com/photos/27865557/pexels-photo-27865557.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "serkan atay",
+    source: "https://www.pexels.com/photo/a-man-and-woman-are-sitting-at-a-wedding-altar-27865557/",
     className: "story-card",
   },
   {
-    title: "An evening to remember",
-    category: "CELEBRATION · HYDERABAD",
+    title: "A promise shared with family",
+    category: "Christian wedding ceremony",
+    type: "Weddings",
     image:
-      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1000&q=85",
+      "https://images.pexels.com/photos/33328742/pexels-photo-33328742.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Fliqa India",
+    source: "https://www.pexels.com/photo/sacred-christian-wedding-ceremony-in-kerala-33328742/",
     className: "story-card",
+  },
+  {
+    title: "In the room where news breaks",
+    category: "Press & media",
+    type: "Press & media",
+    image:
+      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=85",
+    credit: "Unsplash",
+    source: "https://unsplash.com/",
+    className: "story-card",
+  },
+  {
+    title: "Ideas, people, possibility",
+    category: "Brand & corporate",
+    type: "Brand & corporate",
+    image:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85",
+    credit: "Unsplash",
+    source: "https://unsplash.com/",
+    className: "story-card",
+  },
+  {
+    title: "A room full of celebration",
+    category: "Celebrations & community",
+    type: "Celebrations",
+    image:
+      "https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    credit: "Priyanka Jagga",
+    source: "https://www.pexels.com/photo/women-dancing-together-at-party-16583021/",
+    className: "story-card",
+  },
+];
+
+const storyFilters = ["All work", "Weddings", "Press & media", "Brand & corporate", "Celebrations"];
+
+const eventServices = [
+  {
+    number: "01",
+    title: "Press & media",
+    description:
+      "Press conferences, media briefings, interviews, public announcements, and official gatherings.",
+  },
+  {
+    number: "02",
+    title: "Brands & business",
+    description:
+      "Product launches, corporate events, promotional campaigns, and business milestones.",
+  },
+  {
+    number: "03",
+    title: "People & celebrations",
+    description:
+      "Weddings, family occasions, cultural programmes, performances, and community events.",
   },
 ];
 
 export function PhotographySite() {
   const [submitted, setSubmitted] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeStory, setActiveStory] = useState<number | null>(null);
+  const [activeFilter, setActiveFilter] = useState("All work");
+  const heroRef = useRef<HTMLElement | null>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroImageY = useTransform(heroProgress, [0, 1], [0, 100]);
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = "Still & Story — Wedding and Event Photography in Hyderabad";
+    document.title = "Style Studio | Mohammed Saleemuddin — Hyderabad Wedding Photographer";
     return () => {
       document.title = previousTitle;
     };
   }, []);
+
+  useEffect(() => {
+    if (activeStory === null) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActiveStory(null);
+      if (event.key === "ArrowRight") {
+        setActiveStory((current) => (current === null ? null : (current + 1) % stories.length));
+      }
+      if (event.key === "ArrowLeft") {
+        setActiveStory((current) =>
+          current === null ? null : (current - 1 + stories.length) % stories.length,
+        );
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [activeStory]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
   }
 
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
   return (
     <main className="photo-site">
+      <motion.div
+        className="photo-scroll-progress"
+        style={{ scaleX: scrollYProgress }}
+        aria-hidden="true"
+      />
       <header className="photo-nav">
-        <a className="photo-brand" href="#home" aria-label="Still and Story home">
-          STILL <span>&</span> STORY
+        <a className="photo-brand" href="#home" aria-label="Style Studio by Mohammed Saleemuddin home">
+          STYLE <span>STUDIO</span>
+          <small>BY MOHAMMED SALEEMUDDIN</small>
         </a>
-        <nav aria-label="Main navigation">
-          <a href="#stories">Stories</a>
-          <a href="#approach">Our approach</a>
-          <a className="photo-nav-cta" href="#contact">
+        <button
+          className="photo-menu-toggle"
+          type="button"
+          aria-expanded={menuOpen}
+          aria-controls="photo-navigation"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {menuOpen ? "Close" : "Menu"}
+          <span className={menuOpen ? "photo-menu-icon is-open" : "photo-menu-icon"} aria-hidden="true">
+            <i />
+            <i />
+          </span>
+        </button>
+        <nav className={menuOpen ? "is-open" : ""} id="photo-navigation" aria-label="Main navigation">
+          <a href="#stories" onClick={closeMenu}>Stories</a>
+          <a href="#event-services" onClick={closeMenu}>Events</a>
+          <a href="#approach" onClick={closeMenu}>Our approach</a>
+          <a className="photo-nav-cta" href="#contact" onClick={closeMenu}>
             Check your date <span aria-hidden="true">↗</span>
           </a>
         </nav>
       </header>
 
-      <section className="photo-hero" id="home">
-        <img
+      <motion.section className="photo-hero" id="home" ref={heroRef}>
+        <motion.img
           className="photo-hero-image"
-          src="https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&w=2400&q=90"
-          alt="Newlyweds sharing a quiet moment after their ceremony"
+          src="https://images.pexels.com/photos/16583021/pexels-photo-16583021.jpeg?auto=compress&cs=tinysrgb&w=1800"
+          alt="Guests from a diverse Indian wedding celebration dancing together"
+          style={{ y: prefersReducedMotion ? 0 : heroImageY }}
         />
         <div className="photo-hero-shade" />
-        <div className="photo-hero-copy">
-          <p className="photo-eyebrow">WEDDING & EVENT PHOTOGRAPHY · HYDERABAD</p>
-          <h1>For the feeling<br />you’ll want to <em>keep.</em></h1>
+        <motion.div
+          className="photo-hero-copy"
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <motion.p
+            className="photo-eyebrow"
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.12, duration: 0.65 }}
+          >
+            WEDDING & EVENT PHOTOGRAPHY · HYDERABAD
+          </motion.p>
+          <h1>Every moment<br />deserves to be <em>remembered.</em></h1>
           <p className="photo-hero-description">
-            Honest, thoughtful photographs of your people, your traditions, and
-            the moments that make the day yours.
+            From wedding celebrations to press conferences and brand launches,
+            thoughtful photography for the moments that bring people together.
           </p>
           <a className="photo-button photo-button-light" href="#contact">
             Tell us what you’re planning <span aria-hidden="true">↗</span>
           </a>
-        </div>
-        <p className="photo-hero-note">MADE WITH CARE IN HYDERABAD</p>
+        </motion.div>
+        <p className="photo-hero-note">EVERY COMMUNITY · HYDERABAD</p>
         <a className="photo-scroll" href="#stories" aria-label="Scroll to wedding stories">
           <span />
         </a>
-      </section>
+      </motion.section>
 
-      <section className="photo-intro" id="approach">
-        <p className="photo-eyebrow">A LITTLE LESS POSED. A LOT MORE YOU.</p>
+      <Reveal className="photo-intro">
+        <p className="photo-eyebrow">PEOPLE, PLACES & PURPOSEFUL MOMENTS</p>
         <h2>
-          The best photographs don’t interrupt the moment.
+          Stories worth telling,
           <br />
-          <em>They let you return to it.</em>
+          <em>moments worth keeping.</em>
         </h2>
         <p>
-          From the stillness of a nikah to a dance floor full of your favourite
-          people, we document celebrations with warmth, respect, and an eye for
-          the in-between.
+          Style Studio photographs weddings, cultural celebrations, business
+          events, and press assignments with care, discretion, and attention to
+          the moments that matter.
         </p>
+      </Reveal>
+
+      <section className="photo-event-services" id="event-services">
+        <Reveal className="photo-section-heading">
+          <div>
+            <p className="photo-eyebrow">MORE THAN WEDDINGS</p>
+            <h2>One studio. <em>Every kind of event.</em></h2>
+          </div>
+          <p>Professional photography for Hyderabad’s people, organisations, and brands.</p>
+        </Reveal>
+        <div className="photo-event-grid">
+          {eventServices.map((service, index) => (
+            <Reveal className="photo-event-card" key={service.number} delay={index * 0.1}>
+              <span className="photo-event-number">{service.number}</span>
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+              <a href="#contact" aria-label={`Enquire about ${service.title}`}>
+                Enquire about this service <span aria-hidden="true">↗</span>
+              </a>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal className="photo-press-note">
+          <span className="photo-press-mark" aria-hidden="true">PRESS</span>
+          <p>
+            <strong>Press Club member · Holds press accreditation</strong>
+            <span>
+              Available for press and media assignments. Access requirements
+              and credentials can be confirmed with the event organiser.
+            </span>
+          </p>
+        </Reveal>
       </section>
 
       <section className="photo-stories" id="stories">
-        <div className="photo-section-heading">
+        <Reveal className="photo-section-heading">
           <div>
-            <p className="photo-eyebrow">THE STORIES WE TELL</p>
-            <h2>Every celebration, <em>its own world.</em></h2>
+            <p className="photo-eyebrow">A FEW MOMENTS, ACROSS COMMUNITIES</p>
+            <h2>Every tradition belongs. <em>Every story matters.</em></h2>
           </div>
-          <p>Wedding days, nikah ceremonies, and the gatherings around them.</p>
-        </div>
-        <div className="photo-story-grid">
-          {stories.map((story, index) => (
-            <article className={story.className} key={story.title}>
-              <img src={story.image} alt={story.title} loading="lazy" />
-              <span className="photo-story-number">0{index + 1}</span>
-              <div className="photo-story-caption">
-                <p>{story.category}</p>
-                <h3>{story.title}</h3>
-              </div>
-            </article>
+          <p>Weddings and cultural celebrations are one part of the work. Press, business, and public events are too.</p>
+        </Reveal>
+        <p className="photo-stock-note">
+          These are licensed sample photographs, not Style Studio client work.
+          We’ll replace them with Mohammed Saleemuddin’s own portfolio images, shared with
+          clients’ permission.{" "}
+          <a
+            href="https://www.pexels.com/photo/women-dancing-together-at-party-16583021/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Hero photo by Priyanka Jagga on Pexels
+          </a>
+          .
+        </p>
+        <div className="photo-story-filters" role="group" aria-label="Filter portfolio by event type">
+          {storyFilters.map((filter) => (
+            <button
+              className={activeFilter === filter ? "is-active" : ""}
+              type="button"
+              key={filter}
+              aria-pressed={activeFilter === filter}
+              onClick={() => setActiveFilter(filter)}
+            >
+              {filter}
+            </button>
           ))}
         </div>
+        <motion.div className="photo-story-grid" layout>
+          <AnimatePresence mode="popLayout">
+            {stories.map((story, index) =>
+              activeFilter === "All work" || story.type === activeFilter ? (
+                <motion.div
+                  className={story.className}
+                  key={story.title}
+                  layout
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}
+                >
+                  <button
+                    className="photo-story-button"
+                    type="button"
+                    onClick={() => setActiveStory(index)}
+                    aria-label={`View story: ${story.title}`}
+                  >
+                    <img src={story.image} alt="" loading="lazy" />
+                    <span className="photo-story-number">0{index + 1}</span>
+                    <span className="photo-story-caption">
+                      <span>{story.category.toUpperCase()}</span>
+                      <span className="photo-story-title">{story.title}</span>
+                      <span className="photo-story-open">View story ↗</span>
+                    </span>
+                  </button>
+                </motion.div>
+              ) : null,
+            )}
+          </AnimatePresence>
+        </motion.div>
       </section>
 
-      <section className="photo-approach">
-        <div className="photo-approach-image">
+      <section className="photo-approach" id="approach">
+        <Reveal className="photo-approach-image">
           <img
             src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1400&q=85"
             alt="A couple celebrating with their family and friends"
             loading="lazy"
           />
-        </div>
-        <div className="photo-approach-copy">
-          <p className="photo-eyebrow">PRESENT, NEVER IN THE WAY</p>
-          <h2>Your day should feel like <em>your day.</em></h2>
+        </Reveal>
+        <Reveal className="photo-approach-copy" delay={0.12}>
+          <p className="photo-eyebrow">OBSERVANT, PREPARED, PROFESSIONAL</p>
+          <h2>Ready for the moments that <em>matter.</em></h2>
           <p>
-            We take time to understand what matters to you and your family.
-            Then we blend in, pay attention, and photograph the celebration as
-            it truly unfolds.
+            Every assignment starts with understanding the brief. From
+            family-led celebrations to press events and brand activations,
+            the approach is thoughtful, respectful, and focused on telling
+            the story clearly.
           </p>
           <a className="photo-text-link" href="#contact">
-            Let’s talk about your celebration <span aria-hidden="true">↗</span>
+            Tell us about your event <span aria-hidden="true">↗</span>
           </a>
-        </div>
+        </Reveal>
       </section>
 
       <section className="photo-contact" id="contact">
-        <div className="photo-contact-heading">
-          <p className="photo-eyebrow">YOUR DATE, YOUR STORY</p>
-          <h2>Let’s make room<br />for the <em>good stuff.</em></h2>
+        <Reveal className="photo-contact-heading">
+          <p className="photo-eyebrow">WEDDINGS · PRESS · BUSINESS · EVENTS</p>
+          <h2>What are you<br />bringing people <em>together for?</em></h2>
           <p>
-            Tell us a little about the celebration. We’ll be in touch to talk
-            through the details.
+            Share a few details about your wedding, press assignment, launch,
+            or event and Mohammed Saleemuddin will follow up.
           </p>
-        </div>
+          <a className="photo-contact-phone" href="tel:+919885037928">
+            Call Mohammed Saleemuddin <span>+91 98850 37928</span>
+          </a>
+        </Reveal>
+        <Reveal className="photo-form-reveal" delay={0.12}>
         <form className="photo-inquiry-form" onSubmit={handleSubmit}>
           <label>
             Your name
@@ -171,7 +389,7 @@ export function PhotographySite() {
             Tell us about it
             <textarea
               name="details"
-              placeholder="Event type, venue, or anything you’d like us to know"
+              placeholder="What kind of event is it? Include the venue and any details that will help us understand the brief."
               rows={3}
             />
           </label>
@@ -186,15 +404,124 @@ export function PhotographySite() {
             </p>
           )}
         </form>
+        </Reveal>
       </section>
 
       <footer className="photo-footer">
         <a className="photo-brand" href="#home">
-          STILL <span>&</span> STORY
+          STYLE <span>STUDIO</span>
+          <small>BY MOHAMMED SALEEMUDDIN</small>
         </a>
         <p>Wedding and event photography · Hyderabad</p>
         <a href="#home">Back to top ↑</a>
       </footer>
+      <PhotographyAssistant />
+      <AnimatePresence>
+        {activeStory !== null && (
+          <motion.div
+            className="photo-lightbox-backdrop"
+            role="presentation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+            onClick={(event) => {
+              if (event.target === event.currentTarget) setActiveStory(null);
+            }}
+          >
+            <motion.div
+              className="photo-lightbox"
+              role="dialog"
+              aria-modal="true"
+              aria-label={stories[activeStory].title}
+              initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.97, y: 14 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.25 }}
+            >
+              <button
+                className="photo-lightbox-close"
+                type="button"
+                aria-label="Close story"
+                onClick={() => setActiveStory(null)}
+                autoFocus
+              >
+                ×
+              </button>
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={stories[activeStory].image}
+                  src={stories[activeStory].image}
+                  alt={stories[activeStory].title}
+                  initial={prefersReducedMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
+                />
+              </AnimatePresence>
+              <div className="photo-lightbox-caption">
+                <div>
+                  <p>{stories[activeStory].category}</p>
+                  <h2>{stories[activeStory].title}</h2>
+                  <a
+                    className="photo-lightbox-credit"
+                    href={stories[activeStory].source}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Photo via {stories[activeStory].credit} ↗
+                  </a>
+                </div>
+                <div className="photo-lightbox-controls">
+                  <button
+                    type="button"
+                    aria-label="Previous story"
+                    onClick={() =>
+                      setActiveStory((activeStory - 1 + stories.length) % stories.length)
+                    }
+                  >
+                    ←
+                  </button>
+                  <span>0{activeStory + 1} / 0{stories.length}</span>
+                  <button
+                    type="button"
+                    aria-label="Next story"
+                    onClick={() => setActiveStory((activeStory + 1) % stories.length)}
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
+  );
+}
+
+function Reveal({
+  children,
+  className,
+  delay = 0,
+  id,
+}: {
+  children: ReactNode;
+  className: string;
+  delay?: number;
+  id?: string;
+}) {
+  const prefersReducedMotion = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      id={id}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.18 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
   );
 }

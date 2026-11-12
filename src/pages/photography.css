@@ -135,6 +135,67 @@
   max-width: 700px;
   position: relative;
   z-index: 1;
+  width: 100%;
+}
+
+.photo-hero-message {
+  min-height: 225px;
+}
+
+.photo-hero-controls {
+  align-items: center;
+  bottom: 30px;
+  display: flex;
+  gap: 14px;
+  left: 7.2%;
+  position: absolute;
+  z-index: 2;
+}
+
+.photo-hero-controls > button {
+  align-items: center;
+  background: rgba(25, 24, 21, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  font-size: 15px !important;
+  height: 34px;
+  justify-content: center;
+  transition: background 180ms ease, border-color 180ms ease;
+  width: 34px;
+}
+
+.photo-hero-controls > button:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: white;
+}
+
+.photo-hero-dots {
+  align-items: center;
+  display: flex;
+  gap: 7px;
+}
+
+.photo-hero-dots button {
+  background: rgba(255, 255, 255, 0.54);
+  border: 0;
+  border-radius: 999px;
+  height: 5px;
+  padding: 0;
+  transition: background 180ms ease, width 180ms ease;
+  width: 5px;
+}
+
+.photo-hero-dots button.is-active {
+  background: white;
+  width: 22px;
+}
+
+.photo-hero-dots button:focus-visible,
+.photo-hero-controls > button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
 }
 
 .photo-eyebrow {
@@ -214,7 +275,12 @@
   letter-spacing: 0.19em;
   position: absolute;
   right: 7.2%;
+  text-decoration: none;
   z-index: 1;
+}
+
+.photo-hero-note:hover {
+  color: white;
 }
 
 .photo-scroll {
@@ -471,6 +537,7 @@
   background: #d3cec4;
   color: white;
   min-height: 320px;
+  min-width: 0;
   overflow: hidden;
   position: relative;
 }
@@ -579,6 +646,22 @@
   aspect-ratio: 1.05;
   background: #ded8ce;
   overflow: hidden;
+  position: relative;
+}
+
+.photo-approach-image-credit {
+  background: rgba(30, 29, 25, 0.68);
+  bottom: 12px;
+  color: white !important;
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  padding: 8px 10px;
+  position: absolute;
+  right: 12px;
+}
+
+.photo-approach-image-credit:hover {
+  background: #a97852;
 }
 
 .photo-approach-copy h2 {
@@ -916,10 +999,22 @@
     font-size: clamp(53px, 12vw, 82px);
   }
 
+  .photo-hero-message {
+    min-height: 235px;
+  }
+
   .photo-hero-note {
     bottom: 28px;
-    left: 8%;
-    right: auto;
+    font-size: 7px;
+    left: auto;
+    max-width: 45%;
+    right: 6%;
+    text-align: right;
+  }
+
+  .photo-hero-controls {
+    bottom: 21px;
+    left: 6%;
   }
 
   .photo-scroll {
@@ -975,7 +1070,7 @@
 
   .photo-story-filters {
     flex-wrap: nowrap;
-    margin-right: -6%;
+    margin-right: 0;
     overflow-x: auto;
     padding: 0 6% 10px 0;
     scrollbar-width: thin;
@@ -994,7 +1089,7 @@
   .story-card-tall {
     aspect-ratio: 0.78;
     grid-row: auto;
-    min-height: 250px;
+    min-height: 0;
   }
 
   .story-card:first-child {

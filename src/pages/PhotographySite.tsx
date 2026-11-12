@@ -26,7 +26,7 @@ const stories: Array<{
     image:
       "/images/muslim-wedding-client.png",
     isClientWork: true,
-    className: "story-card",
+    className: "story-card story-card-client-photo",
   },
   {
     title: "A promise shared with family",
@@ -648,6 +648,7 @@ export function PhotographySite() {
                   key={stories[activeStory].image}
                   src={stories[activeStory].image}
                   alt={stories[activeStory].title}
+                  className={stories[activeStory].isClientWork ? "photo-lightbox-client-image" : ""}
                   initial={prefersReducedMotion ? false : { opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}

@@ -547,6 +547,12 @@
   grid-row: span 2;
 }
 
+.story-card-client-photo {
+  aspect-ratio: 1.5;
+  grid-column: span 2;
+  min-height: 0;
+}
+
 .photo-story-button {
   background: transparent;
   border: 0;
@@ -828,6 +834,12 @@
   width: 100%;
 }
 
+.photo-lightbox > img.photo-lightbox-client-image {
+  height: auto;
+  max-height: min(68vh, 760px);
+  object-fit: contain;
+}
+
 .photo-lightbox-close {
   align-items: center;
   background: rgba(20, 19, 17, 0.62);
@@ -1103,6 +1115,11 @@
   .story-card:first-child {
     grid-column: span 2;
     aspect-ratio: 1.15;
+  }
+
+  .story-card-client-photo {
+    aspect-ratio: 1.5;
+    grid-column: span 2;
   }
 
   .photo-story-caption {

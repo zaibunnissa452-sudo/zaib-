@@ -1,14 +1,11 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll } from "framer-motion";
-import { ElectricLogo } from "../components/ElectricLogo";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { trackEvent } from "../lib/analytics";
 import "./photography.css";
 import "./photography-orbit.css";
 import { PhotographyOrbitHero } from "./PhotographyOrbitHero";
 import { PhotographyAssistant, whatsappUrl } from "./PhotographyAssistant";
-import { SpotlightCard } from "../components/SpotlightCard";
 import { MagneticButton } from "../components/MagneticButton";
-import { GoldenGlowCursor } from "../components/GoldenGlowCursor";
 
 const stories: Array<{
   title: string;
@@ -176,19 +173,10 @@ const stories: Array<{
 const storyFilters = ["All examples", "Weddings", "Birthdays", "Press & media", "Brand & corporate", "Celebrations"];
 
 const orbitStoryIndices = [2, 3, 10, 11, 15, 17] as const;
-const orbitLabels = [
-  "A promise, witnessed",
-  "The beginning of always",
-  "A table full of stories",
-  "A night to remember",
-  "Under the evening lights",
-  "Style on display",
-];
-const heroOrbitEvents = orbitStoryIndices.map((storyIndex, index) => ({
+const heroOrbitEvents = orbitStoryIndices.map((storyIndex) => ({
   storyIndex,
   image: stories[storyIndex].image,
   title: stories[storyIndex].category,
-  label: orbitLabels[index],
 }));
 
 const eventTypes = [
@@ -232,27 +220,12 @@ const eventServices = [
   },
 ];
 
-function updatePointerTilt(element: HTMLElement, clientX: number, clientY: number) {
-  const bounds = element.getBoundingClientRect();
-  if (!bounds.width || !bounds.height) return;
-  const horizontal = (clientX - bounds.left) / bounds.width - 0.5;
-  const vertical = (clientY - bounds.top) / bounds.height - 0.5;
-  element.style.setProperty("--photo-tilt-x", `${vertical * -8}deg`);
-  element.style.setProperty("--photo-tilt-y", `${horizontal * 10}deg`);
-}
-
-function resetPointerTilt(element: HTMLElement) {
-  element.style.setProperty("--photo-tilt-x", "0deg");
-  element.style.setProperty("--photo-tilt-y", "0deg");
-}
-
 export function PhotographySite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeStory, setActiveStory] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState("All examples");
   const [selectedEventType, setSelectedEventType] = useState("");
   const prefersReducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -320,28 +293,12 @@ export function PhotographySite() {
 
   return (
     <main className="photo-site">
-      <GoldenGlowCursor />
-      <motion.div
-        className="photo-scroll-progress"
-        style={{ scaleX: scrollYProgress }}
-        aria-hidden="true"
-      />
       <header className="photo-nav">
         <a className="photo-brand" href="#home">
           <img
             src="/images/photography/style-studio-logo.png"
             alt="Style Studio Photography — Capture, Cherish, Forever"
           />
-          <span className="photo-brand-electric" aria-hidden="true">
-            <ElectricLogo
-              src="/images/photography/style-studio-logo.png"
-              color="#f0c66a"
-              glowColor="#e9b957"
-              sparkColor="#fff2c6"
-              edgeMode="luminance"
-              drawSource={false}
-            />
-          </span>
         </a>
         <button
           className="photo-menu-toggle"
@@ -374,21 +331,7 @@ export function PhotographySite() {
 
       <section className="photo-photographer" aria-labelledby="photo-photographer-title">
         <div className="photo-photographer-layout">
-          <div
-            className="photo-photographer-portrait"
-            onPointerMove={(event) => {
-              if (
-                prefersReducedMotion ||
-                window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-                event.pointerType !== "mouse"
-              ) {
-                resetPointerTilt(event.currentTarget);
-                return;
-              }
-              updatePointerTilt(event.currentTarget, event.clientX, event.clientY);
-            }}
-            onPointerLeave={(event) => resetPointerTilt(event.currentTarget)}
-          >
+          <div className="photo-photographer-portrait">
             <div className="photo-photographer-portrait-card">
               <img
                 src="/images/photography/saleem-photographer.jpg"
@@ -444,20 +387,20 @@ export function PhotographySite() {
         <div className="photo-event-grid">
           {eventServices.map((service, index) => (
             <Reveal key={service.number} className="photo-event-card-reveal" delay={index * 0.1}>
-              <SpotlightCard className="photo-event-card">
-              <span className="photo-event-number">{service.number}</span>
-              <h3>{service.title}</h3>
-              <p>{service.description}</p>
-              <a
-                href="#contact"
-                aria-label={`Enquire about ${service.title}`}
-                onClick={() => {
-                  setSelectedEventType(service.eventType);
-                }}
-              >
-                Enquire about this service <span aria-hidden="true">↗</span>
-              </a>
-            </SpotlightCard>
+              <article className="photo-event-card">
+                <span className="photo-event-number">{service.number}</span>
+                <h3>{service.title}</h3>
+                <p>{service.description}</p>
+                <a
+                  href="#contact"
+                  aria-label={`Enquire about ${service.title}`}
+                  onClick={() => {
+                    setSelectedEventType(service.eventType);
+                  }}
+                >
+                  Enquire about this service <span aria-hidden="true">↗</span>
+                </a>
+              </article>
             </Reveal>
           ))}
         </div>
@@ -506,18 +449,6 @@ export function PhotographySite() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}
-                  onPointerMove={(event) => {
-                    if (
-                      prefersReducedMotion ||
-                      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-                      event.pointerType !== "mouse"
-                    ) {
-                      resetPointerTilt(event.currentTarget);
-                      return;
-                    }
-                    updatePointerTilt(event.currentTarget, event.clientX, event.clientY);
-                  }}
-                  onPointerLeave={(event) => resetPointerTilt(event.currentTarget)}
                 >
                   <button
                     className="photo-story-button"

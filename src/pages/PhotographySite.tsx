@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { AnimatePresence, motion, useReducedMotion, useScroll } from "framer-motion";
 import { ElectricLogo } from "../components/ElectricLogo";
 import { trackEvent } from "../lib/analytics";
 import "./photography.css";
+import "./photography-orbit.css";
+import { PhotographyOrbitHero } from "./PhotographyOrbitHero";
 import { PhotographyAssistant, whatsappUrl } from "./PhotographyAssistant";
-import { GoldParticles } from "../components/GoldParticles";
 import { SpotlightCard } from "../components/SpotlightCard";
 import { MagneticButton } from "../components/MagneticButton";
 import { GoldenGlowCursor } from "../components/GoldenGlowCursor";
-import { KineticText } from "../components/KineticText";
 
 const stories: Array<{
   title: string;
@@ -175,55 +175,21 @@ const stories: Array<{
 
 const storyFilters = ["All examples", "Weddings", "Birthdays", "Press & media", "Brand & corporate", "Celebrations"];
 
-const heroSlides = [
-  {
-    eyebrow: "WEDDINGS ACROSS ALL FAITHS & TRADITIONS",
-    heading: "Every tradition",
-    emphasis: "deserves to be remembered.",
-    description:
-      "Photography and videography for Hindu, Muslim, Christian, Sikh, Buddhist, Jewish, Jain, interfaith, and other wedding traditions.",
-    image:
-      "https://images.pexels.com/photos/8804917/pexels-photo-8804917.jpeg?auto=compress&cs=tinysrgb&w=1800",
-    alt: "An Indian couple during their wedding ceremony",
-  },
-  {
-    eyebrow: "BIRTHDAYS & FAMILY CELEBRATIONS",
-    heading: "Good people.",
-    emphasis: "A day worth keeping.",
-    description:
-      "Photography and videography for birthdays and family celebrations.",
-    image:
-      "https://images.pexels.com/photos/27176823/pexels-photo-27176823.jpeg?auto=compress&cs=tinysrgb&w=1800",
-    alt: "Friends celebrating a birthday with cake and sparklers",
-  },
-  {
-    eyebrow: "PRESS & MEDIA",
-    heading: "The moments",
-    emphasis: "the city needs to see.",
-    description:
-      "Photography-only coverage for press conferences, interviews, public announcements, and media assignments.",
-    image:
-      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1800&q=85",
-    alt: "A speaker addressing an audience at an event",
-  },
-  {
-    eyebrow: "BRANDS & BUSINESS",
-    heading: "Bring your",
-    emphasis: "big ideas into focus.",
-    description:
-      "Professional imagery for launches, conferences, campaigns, and the people behind your brand.",
-    image:
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85",
-    alt: "Colleagues collaborating around a table",
-  },
+const orbitStoryIndices = [2, 3, 10, 11, 15, 17] as const;
+const orbitLabels = [
+  "A promise, witnessed",
+  "The beginning of always",
+  "A table full of stories",
+  "A night to remember",
+  "Under the evening lights",
+  "Style on display",
 ];
-
-const heroServices = [
-  { label: "Weddings", coverage: "Photography + video", slide: 0 },
-  { label: "Birthdays", coverage: "Photography + video", slide: 1 },
-  { label: "Press events", coverage: "Photography only", slide: 2 },
-  { label: "Brands & Business", coverage: "Photography + launches", slide: 3 },
-] as const;
+const heroOrbitEvents = orbitStoryIndices.map((storyIndex, index) => ({
+  storyIndex,
+  image: stories[storyIndex].image,
+  title: stories[storyIndex].category,
+  label: orbitLabels[index],
+}));
 
 const eventTypes = [
   "Wedding (all faiths & traditions)",
@@ -284,25 +250,9 @@ export function PhotographySite() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeStory, setActiveStory] = useState<number | null>(null);
   const [activeFilter, setActiveFilter] = useState("All examples");
-  const [activeHero, setActiveHero] = useState(0);
-  const [heroPaused, setHeroPaused] = useState(false);
   const [selectedEventType, setSelectedEventType] = useState("");
-  const heroRef = useRef<HTMLElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroImageY = useTransform(heroProgress, [0, 1], [0, 100]);
-
-  useEffect(() => {
-    if (prefersReducedMotion || heroPaused) return;
-    const timer = window.setInterval(() => {
-      setActiveHero((current) => (current + 1) % heroSlides.length);
-    }, 6500);
-    return () => window.clearInterval(timer);
-  }, [heroPaused, prefersReducedMotion]);
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -416,125 +366,11 @@ export function PhotographySite() {
         </nav>
       </header>
 
-      <motion.section
-        className="photo-hero"
-        id="home"
-        ref={heroRef}
-        aria-label="Style Studio event photography examples"
-        aria-roledescription="carousel"
-      >
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={heroSlides[activeHero].image}
-            className="photo-hero-image"
-            src={heroSlides[activeHero].image}
-            alt={heroSlides[activeHero].alt}
-            style={{ y: prefersReducedMotion ? 0 : heroImageY }}
-            initial={prefersReducedMotion ? false : { opacity: 0, scale: 1.03 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.8 }}
-          />
-        </AnimatePresence>
-        <div className="photo-hero-shade" />
-        <GoldParticles particleCount={45} speed={0.35} />
-        <motion.div
-          className="photo-hero-copy"
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <motion.p
-            key={`eyebrow-${activeHero}`}
-            className="photo-eyebrow"
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12, duration: 0.65 }}
-          >
-            {heroSlides[activeHero].eyebrow} · HYDERABAD
-          </motion.p>
-          <div className="photo-service-options" role="group" aria-label="Photography and videography services">
-            {heroServices.map((service) => (
-              <motion.button
-                className="photo-service-option"
-                key={service.label}
-                type="button"
-                aria-label={`${service.label}: ${service.coverage}`}
-                aria-pressed={activeHero === service.slide}
-                onClick={() => setActiveHero(service.slide)}
-                whileHover={prefersReducedMotion ? undefined : { y: -3, rotateX: 2, rotateY: -1, scale: 1.01 }}
-                whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
-              >
-                <span>{service.label}</span>
-                <strong>{service.coverage}</strong>
-              </motion.button>
-            ))}
-          </div>
-          <AnimatePresence mode="wait">
-            <motion.div
-              className="photo-hero-message"
-              key={activeHero}
-              initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.35 }}
-            >
-              <KineticText
-                heading={heroSlides[activeHero].heading}
-                emphasis={heroSlides[activeHero].emphasis}
-              />
-              <p className="photo-hero-description">{heroSlides[activeHero].description}</p>
-            </motion.div>
-          </AnimatePresence>
-          <MagneticButton href="#contact" className="photo-button photo-button-light">
-            Tell us what you’re planning <span aria-hidden="true">↗</span>
-          </MagneticButton>
-        </motion.div>
-        <div className="photo-hero-bottom">
-          <p className="photo-hero-note">
-            REPRESENTATIVE EVENT IMAGE · NOT A CLIENT ASSIGNMENT
-          </p>
-          <div className="photo-hero-controls" role="group" aria-label="Choose hero image">
-            <button
-              type="button"
-              aria-label="Previous event category"
-              onClick={() => setActiveHero((activeHero - 1 + heroSlides.length) % heroSlides.length)}
-            >
-              ←
-            </button>
-            <div className="photo-hero-dots">
-              {heroSlides.map((slide, index) => (
-                <button
-                  type="button"
-                  key={slide.eyebrow}
-                  className={index === activeHero ? "is-active" : ""}
-                  aria-label={`Show ${slide.eyebrow.toLowerCase()} image`}
-                  aria-pressed={index === activeHero}
-                  onClick={() => setActiveHero(index)}
-                />
-              ))}
-            </div>
-            <button
-              type="button"
-              aria-label="Next event category"
-              onClick={() => setActiveHero((activeHero + 1) % heroSlides.length)}
-            >
-              →
-            </button>
-            <button
-              type="button"
-              aria-label={heroPaused ? "Resume automatic event categories" : "Pause automatic event categories"}
-              aria-pressed={heroPaused}
-              onClick={() => setHeroPaused((paused) => !paused)}
-            >
-              <span aria-hidden="true">{heroPaused ? "▶" : "Ⅱ"}</span>
-            </button>
-          </div>
-        </div>
-        <a className="photo-scroll" href="#event-services" aria-label="Scroll to event services">
-          <span />
-        </a>
-      </motion.section>
+      <PhotographyOrbitHero
+        events={heroOrbitEvents}
+        portrait="/images/photography/saleem-portrait-hero.jpg"
+        onOpenStory={setActiveStory}
+      />
 
       <section className="photo-photographer" aria-labelledby="photo-photographer-title">
         <div className="photo-photographer-layout">

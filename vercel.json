@@ -1,8 +1,13 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
       "source": "/photography",
-      "destination": "/photography.html"
+      "destination": "https://style-studio-photography.vercel.app/"
+    },
+    {
+      "source": "/photography/:path*",
+      "destination": "https://style-studio-photography.vercel.app/:path*"
     }
   ]
 }
